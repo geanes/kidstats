@@ -1,15 +1,10 @@
 #' @import shiny
 shinyServer(function(input, output) {
 
- refdata <- reactive({
-   infile <- paste0("~/stats/kidstats/data/", input$refsamp)
-
-   if (is.null(infile))
-   return(NULL)
-
-   ref <- get(load(infile))
-   return(ref)
- })
+  refdata <- reactive({
+    switch(input$refsamp,
+           "za" = salb_za)
+  })
 
 # elements
  elements <- reactive({
@@ -92,6 +87,7 @@ shinyServer(function(input, output) {
 
     return(elements)
  })
+
 # construct elements table
     el_names <- c("<h4>Elements</h4>", "<h5>Femur</h5>", "<h5>Tibia</h5>", "<h5>Humerus</h5>", "<h5>Radius</h5>", "<h5>Ulna</h5>")
     el_meas <- c("Max. Length", "Prox. Breadth", "MS. Breadth", "Dist. Breadth")
