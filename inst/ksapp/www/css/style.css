@@ -1,0 +1,96 @@
+/*
+* {
+	border: 1px solid red !important;
+}
+*/
+
+body {
+  padding-top: 70px;
+  padding-bottom: 70px;
+}
+
+@media only screen and (max-width: 992px){
+	.wide-label{
+		display: none !important;
+		visibility: hidden !important;
+	}
+  
+  .wide-name {
+    border-top: 1px solid #e3e3e3;
+    border-bottom: 1px solid #e3e3e3;
+    background-color: #f5f5f5;
+    margin-top: 5px;
+    margin-bottom: 3px;
+  }
+  .wide-name h5{
+    text-align: center;
+  }
+  
+  .numrow-sm {
+    margin-top: 3px;
+  }
+}
+
+@media only screen and (min-width: 992px){
+	.narrow-label{
+		display: none !important;
+		visibility: hidden !important;
+	}
+  
+  .wide-name h5{
+    text-align: right;
+    margin-top: 0px;
+    margin-bottom: 0px;
+	}
+  
+  .el-container {
+  padding: 0px 10px;
+  background-color: #f5f5f5;
+  border: 1px solid #e3e3e3;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
+  }
+  
+  .el-row {
+    margin-bottom: 3px;
+  }
+}
+
+.numbox {
+  padding: 0px 5px;
+  height: 20px;
+}
+
+.gwell {
+  min-height: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+  margin-left: 0px;
+  margin-right: 0px;
+  background-color: #f5f5f5;
+  border: 1px solid #e3e3e3;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
+}
+.gwell blockquote {
+  border-color: #ddd;
+  border-color: rgba(0, 0, 0, .15);
+}
+.gwell-lg {
+  padding: 0px 24px;
+  border-radius: 6px;
+}
+.gwell-sm {
+  padding: 9px;
+  border-radius: 3px;
+}
+
+.prog-spaced {
+  margin-top: 5px;
+}
+
+.sect-label h5, h4{
+  font-weight: bold;
+}
