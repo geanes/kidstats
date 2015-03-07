@@ -9,7 +9,6 @@ shinyServer(function(input, output) {
 # elements
  elements <- reactive({
    elements <-data.frame()
-
     if(!is.na(input$fmxl)){
       elements[nrow(elements) + 1, 1] <- "f_mxl"
       elements[nrow(elements), 2] <- input$fmxl
@@ -82,13 +81,11 @@ shinyServer(function(input, output) {
       elements[nrow(elements) + 1, 1] <- "u_msb"
       elements[nrow(elements), 2] <- input$umsb
     }
-
     if(nrow(elements) == 0)  return(NULL)
-
     return(elements)
  })
 
-# construct elements table
+# construct elements input table
     el_names <- c("<h4>Elements</h4>", "<h5>Femur</h5>", "<h5>Tibia</h5>", "<h5>Humerus</h5>", "<h5>Radius</h5>", "<h5>Ulna</h5>")
     el_meas <- c("Max. Length", "Prox. Breadth", "MS. Breadth", "Dist. Breadth")
       mxl <- c("Max. Length",
@@ -171,7 +168,7 @@ shinyServer(function(input, output) {
 
 
  output$age <- renderText({
-   if(is.null(refsamp())) return(paste(h5("Input insufficient")))
+   if(is.null(refsamp())) return(paste(hr()))
 
    estage <- earth_mod()[1]
    if(is.null(estage)) return(print(""))

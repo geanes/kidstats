@@ -1,16 +1,18 @@
 #' @import shiny
 # library(shiny)
-shinyUI(navbarPage(title = "kidstats", windowTitle = "kidstats",
+shinyUI(navbarPage(title = "kidstats", windowTitle = "kidstats", theme = shinythemes::shinytheme("united"),
                    position = "fixed-top", inverse = TRUE, collapsible = TRUE,
                    header = tags$style(type="text/css", "body {padding-top: 70px;}"),
   tabPanel("Input", value = "input",
 # Sidebar
     sidebarPanel(
       selectizeInput("refsamp", "Reference Sample", choices = c("South Africa" = "za"), selected = "za", multiple = TRUE, width = "200px"),
- # fileInput("refsamp", label = "Reference data"),
+     # fileInput("refsamp", label = "Reference data"),
       radioButtons("transform", label = "Transformation",
         choices = list("None" = "none", "Square root" = "sqrt", "Cube root" = "cbrt"),
-        selected = "none")
+        selected = "none"),
+     br(),
+     actionButton("evaluate", "Evaluate")
     ),
 # Main panel
    mainPanel(fluidRow(column(10, offset = 1, tableOutput("el_table"))),
