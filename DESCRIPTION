@@ -13,5 +13,7 @@ License: GPL-3
 LazyData: true
 VignetteBuilder: knitr
 Imports: earth,
-    shiny
+    shiny,
+    magrittr,
+    dplyr
 Suggests: knitr

@@ -1,158 +1,99 @@
 #' @import shiny
 shinyServer(function(input, output) {
-
+  # get the reference data from the selectize input
   refdata <- reactive({
     switch(input$refsamp,
            "za" = salb_za)
   })
 
-# elements
- elements <- reactive({
-   elements <-data.frame()
-    if(!is.na(input$fmxl)){
-      elements[nrow(elements) + 1, 1] <- "f_mxl"
-      elements[nrow(elements), 2] <- input$fmxl
-    }
-    if(!is.na(input$fmsb)){
-      elements[nrow(elements) + 1, 1] <- "f_msb"
-      elements[nrow(elements), 2] <- input$fmsb
-    }
-    if(!is.na(input$fdb)){
-      elements[nrow(elements) + 1, 1] <- "f_db"
-      elements[nrow(elements), 2] <- input$fdb
-    }
-
-    if(!is.na(input$tmxl)){
-      elements[nrow(elements) + 1, 1] <- "t_mxl"
-      elements[nrow(elements), 2] <- input$tmxl
-    }
-    if(!is.na(input$tpb)){
-      elements[nrow(elements) + 1, 1] <- "t_pb"
-      elements[nrow(elements), 2] <- input$tpb
-    }
-    if(!is.na(input$tmsb)){
-      elements[nrow(elements) + 1, 1] <- "t_msb"
-      elements[nrow(elements), 2] <- input$tmsb
-    }
-    if(!is.na(input$tdb)){
-      elements[nrow(elements) + 1, 1] <- "t_db"
-      elements[nrow(elements), 2] <- input$tdb
-    }
-
-    if(!is.na(input$hmxl)){
-      elements[nrow(elements) + 1, 1] <- "h_mxl"
-      elements[nrow(elements), 2] <- input$hmxl
-    }
-    if(!is.na(input$hpb)){
-      elements[nrow(elements) + 1, 1] <- "h_pb"
-      elements[nrow(elements), 2] <- input$hpb
-    }
-    if(!is.na(input$hmsb)){
-      elements[nrow(elements) + 1, 1] <- "h_msb"
-      elements[nrow(elements), 2] <- input$hmsb
-    }
-    if(!is.na(input$hdb)){
-      elements[nrow(elements) + 1, 1] <- "h_db"
-      elements[nrow(elements), 2] <- input$hdb
-    }
-
-    if(!is.na(input$rmxl)){
-      elements[nrow(elements) + 1, 1] <- "r_mxl"
-      elements[nrow(elements), 2] <- input$rmxl
-    }
-    if(!is.na(input$rpb)){
-      elements[nrow(elements) + 1, 1] <- "r_pb"
-      elements[nrow(elements), 2] <- input$rpb
-    }
-    if(!is.na(input$rmsb)){
-      elements[nrow(elements) + 1, 1] <- "r_msb"
-      elements[nrow(elements), 2] <- input$rmsb
-    }
-    if(!is.na(input$rdb)){
-      elements[nrow(elements) + 1, 1] <- "r_db"
-      elements[nrow(elements), 2] <- input$rdb
-    }
-
-    if(!is.na(input$umxl)){
-      elements[nrow(elements) + 1, 1] <- "u_mxl"
-      elements[nrow(elements), 2] <- input$umxl
-    }
-    if(!is.na(input$umsb)){
-      elements[nrow(elements) + 1, 1] <- "u_msb"
-      elements[nrow(elements), 2] <- input$umsb
-    }
-    if(nrow(elements) == 0)  return(NULL)
-    return(elements)
- })
+  # elements is the newdata data.frame
+  elements <- reactive({
+    elements <- c()
+     if(!is.na(input$fmxl)) elements <- c(elements, "f_mxl" = input$fmxl)
+     if(!is.na(input$fmsb)) elements <- c(elements, "f_msb" = input$fmsb)
+     if(!is.na(input$fdb)) elements <- c(elements, "f_db" = input$fdb)
+     if(!is.na(input$tmxl)) elements <- c(elements, "t_mxl" = input$tmxl)
+     if(!is.na(input$tpb)) elements <- c(elements, "t_pb" = input$tpb)
+     if(!is.na(input$tmsb)) elements <- c(elements, "t_msb" = input$tmsb)
+     if(!is.na(input$tdb)) elements <- c(elements, "t_db" = input$tdb)
+     if(!is.na(input$hmxl)) elements <- c(elements, "h_mxl" = input$hmxl)
+     if(!is.na(input$hpb)) elements <- c(elements, "h_pb" = input$hpb)
+     if(!is.na(input$hmsb)) elements <- c(elements, "h_msb" = input$hmsb)
+     if(!is.na(input$hdb)) elements <- c(elements, "h_db" = input$hdb)
+     if(!is.na(input$rmxl)) elements <- c(elements, "r_mxl" = input$rmxl)
+     if(!is.na(input$rpb)) elements <- c(elements, "r_pb" = input$rpb)
+     if(!is.na(input$rmsb)) elements <- c(elements, "r_msb" = input$rmsb)
+     if(!is.na(input$rdb)) elements <- c(elements, "r_db" = input$rdb)
+     if(!is.na(input$umxl)) elements <- c(elements, "u_mxl" = input$umxl)
+     if(!is.na(input$umsb)) elements <- c(elements, "u_msb" = input$umsb)
+     if(length(elements) == 0)  return(NULL)
+     return(data.frame(as.list(elements)))
+  })
 
 # construct elements input table
-    el_names <- c("<h4>Elements</h4>", "<h5>Femur</h5>", "<h5>Tibia</h5>", "<h5>Humerus</h5>", "<h5>Radius</h5>", "<h5>Ulna</h5>")
-    el_meas <- c("Max. Length", "Prox. Breadth", "MS. Breadth", "Dist. Breadth")
-      mxl <- c("Max. Length",
-        "<input id='fmxl' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
-        "<input id='tmxl' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
-        "<input id='hmxl' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
-        "<input id='rmxl' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
-        "<input id='umxl' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>"
-      )
-      pb <- c("Prox. Breadth",
-        NA,
-        "<input id='tpb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
-        "<input id='hpb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
-        "<input id='rpb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
-        NA
-      )
-      msb <- c("MS. Breadth",
-        "<input id='fmsb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
-        "<input id='tmsb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
-        "<input id='hmsb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
-        "<input id='rmsb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
-        "<input id='umsb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>"
-      )
-      db <- c("Dist. Breadth",
-        "<input id='fdb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
-        "<input id='tdb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
-        "<input id='hdb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
-        "<input id='rdb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
-        NA
-      )
-        output$el_table <-renderTable({
-          data.frame(el_names, mxl, pb, msb, db)
-        }, sanitize.text.function = function(x) x, sanitize.rownames.function = function(x) x, sanitize.colnames.function = function(x) x, include.rownames = FALSE, include.colnames = FALSE)
+  el_names <- c("<h4>Elements</h4>", "<h5>Femur</h5>", "<h5>Tibia</h5>", "<h5>Humerus</h5>", "<h5>Radius</h5>", "<h5>Ulna</h5>")
+  el_meas <- c("Max. Length", "Prox. Breadth", "MS. Breadth", "Dist. Breadth")
+  mxl <- c("Max. Length",
+    "<input id='fmxl' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
+    "<input id='tmxl' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
+    "<input id='hmxl' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
+    "<input id='rmxl' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
+    "<input id='umxl' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>"
+  )
+  pb <- c("Prox. Breadth",
+    NA,
+    "<input id='tpb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
+    "<input id='hpb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
+    "<input id='rpb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
+    NA
+  )
+  msb <- c("MS. Breadth",
+    "<input id='fmsb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
+    "<input id='tmsb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
+    "<input id='hmsb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
+    "<input id='rmsb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
+    "<input id='umsb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>"
+  )
+  db <- c("Dist. Breadth",
+    "<input id='fdb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
+    "<input id='tdb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
+    "<input id='hdb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
+    "<input id='rdb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
+    NA
+  )
 
+  output$el_table <-renderTable({
+    data.frame(el_names, mxl, pb, msb, db)
+  }, sanitize.text.function = function(x) x, sanitize.rownames.function = function(x) x, sanitize.colnames.function = function(x) x, include.rownames = FALSE, include.colnames = FALSE)
 
+  # create the reference data from the raw data
   refsamp <- reactive({
     if(is.null(refdata()) | is.null(elements())) return(NULL)
-    data <- refdata()
-    dat <- elements()
-    dat_clean <- data[c("age_y", dat[[1]])]
-    ref <- na.omit(dat_clean)
+    ref <- dplyr::select_(refdata(), .dots = c("age_y", names(elements()))) %>% na.omit
     return(ref)
   })
 
-
+  # output the reference data in the reference sample section of the ui
   output$table <- renderDataTable({
     if(is.null(refsamp())) return(NULL)
     refsamp()
   })
 
-
+  # create the model and predict the age
   earth_mod <- reactive({
-    dat <- elements()
-    ref <- refsamp()
-    x <- ref[, -1]
-    newdata <- as.data.frame(t(dat[, -1]))
-    names(newdata) <- dat[[1]]
-
+    input$evaluate
+    # exclude age_y from the variable dataset
+    x <- dplyr::select_(refsamp(), ~-age_y)
+    # extract age_y from the reference sample
     y <- switch(input$transform,
-      sqrt = sqrt(ref[, 1]),
-      cbrt = (ref[, 1])^(1/3),
-      ref[, 1]
+      sqrt = sqrt(dplyr::select_(refsamp(), ~age_y)),
+      cbrt = (dplyr::select_(refsamp(), ~age_y))^(1/3),
+      dplyr::select_(refsamp(), ~age_y)
     )
-
-    model <- earth::earth(x = x, y = y)
+    # create the model and make predictions
+    model <- isolate(earth::earth(x = x, y = y))
     rsq <- round(model$grsq, digits = 4)
-    estage <- predict(model, newdata = newdata)
+    estage <- predict(model, newdata = elements())
 
     estage <- switch(input$transform,
       sqrt = round(estage^2, digits = 2),
@@ -166,7 +107,7 @@ shinyServer(function(input, output) {
     return(message)
   })
 
-
+ # output the estage value
  output$age <- renderText({
    if(is.null(refsamp())) return(paste(hr()))
 
@@ -176,7 +117,7 @@ shinyServer(function(input, output) {
    return(message)
  })
 
-
+ # output Rsq
  output$rsq <- renderText({
    if(is.null(refsamp())) return(print(""))
 
@@ -186,7 +127,7 @@ shinyServer(function(input, output) {
    return(message)
  })
 
-
+ # output sample size
  output$sampsize <- renderText({
    if(is.null(refsamp())) return(print(""))
 
@@ -194,7 +135,5 @@ shinyServer(function(input, output) {
    message <- paste(h5("Sample size:"), h3(samp), sep = " ")
    return(message)
  })
-
-
 
 })
