@@ -1,12 +1,19 @@
 shinyServer(function(input, output) {
   # get the reference data from the selectize input
   refdata <- reactive({
+    input$evaluate
+    isolate({
+    if(length(input$refsamp) == 0) return(NULL)
     switch(input$refsamp,
-           "za" = salb_za)
+           "za" = salb_za,
+           NULL)
+    })
   })
 
   # elements is the newdata data.frame
   elements <- reactive({
+    input$evaluate
+    isolate({
     elements <- c()
      if(!is.na(input$fmxl)) elements <- c(elements, "f_mxl" = input$fmxl)
      if(!is.na(input$fmsb)) elements <- c(elements, "f_msb" = input$fmsb)
@@ -27,6 +34,7 @@ shinyServer(function(input, output) {
      if(!is.na(input$umsb)) elements <- c(elements, "u_msb" = input$umsb)
      if(length(elements) == 0)  return(NULL)
      return(data.frame(as.list(elements)))
+    })
   })
 
 # construct elements input table
@@ -80,25 +88,27 @@ shinyServer(function(input, output) {
 
   # create the model and predict the age
   earth_mod <- reactive({
-    # input$evaluate
+    input$evaluate
     # exclude age_y from the variable dataset
     x <- dplyr::select_(refsamp(), ~-age_y)
     # extract age_y from the reference sample
+    isolate({
     y <- switch(input$transform,
       sqrt = sqrt(dplyr::select_(refsamp(), ~age_y)),
       cbrt = (dplyr::select_(refsamp(), ~age_y))^(1/3),
       dplyr::select_(refsamp(), ~age_y)
-    )
+    )})
     # create the model and make predictions
     model <- earth::earth(x = x, y = y, varmod.method = "lm", ncross = 30, nfold = 10)
     rsq <- round(model$grsq, digits = 4)
     estage <- predict(model, newdata = elements(), interval = "pint")
 
+    isolate({
     estage <- switch(input$transform,
       sqrt = round(estage^2, digits = 2),
       cbrt = round(estage^3, digits = 2),
       round(estage, digits = 2)
-    )
+    )})
     # prepare return object
     message <- c()
     message[1] <- estage[1]
@@ -110,40 +120,44 @@ shinyServer(function(input, output) {
 
  # output the estage value
  output$age <- renderText({
-   if(is.null(refsamp())) return(print(""))
+   if(input$evaluate == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
+   if(is.null(refsamp())) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
    estage <- earth_mod()[1]
    if(is.null(estage)) return(print(""))
-   message <- paste(h5("Estimated age:"), h3(estage), sep = " ")
+   message <- paste(h5("Estimated age:"), h3(sprintf("%.2f", estage)), sep = " ")
    return(message)
  })
  # output lwr
  output$lwr <- renderText({
-   if(is.null(refsamp())) return(print(""))
+   if(input$evaluate == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
+   if(is.null(refsamp())) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
    lwr <- earth_mod()[2]
    if(is.null(lwr)) return(print(""))
-   message <- paste(h5("Lower PI:"), h3(lwr), sep = " ")
+   message <- paste(h5("Lower PI:"), h3(sprintf("%.2f", lwr)), sep = " ")
    return(message)
  })
  # output upr
  output$upr <- renderText({
-   if(is.null(refsamp())) return(print(""))
+   if(input$evaluate == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
+   if(is.null(refsamp())) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
    upr <- earth_mod()[3]
    if(is.null(upr)) return(print(""))
-   message <- paste(h5("Upper PI:"), h3(upr), sep = " ")
+   message <- paste(h5("Upper PI:"), h3(sprintf("%.2f", upr)), sep = " ")
    return(message)
  })
  # output Rsq
  output$rsq <- renderText({
-   if(is.null(refsamp())) return(print(""))
+   if(input$evaluate == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
+   if(is.null(refsamp())) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
    rsq <- earth_mod()[4]
    if(is.null(rsq)) return(print(""))
-   message <- paste(h5("Model R^2:"), h3(rsq), sep = " ")
+   message <- paste(h5("Model R^2:"), h3(sprintf("%.4f", rsq)), sep = " ")
    return(message)
  })
  # output sample size
  output$sampsize <- renderText({
-   if(is.null(refsamp())) return(print(""))
-
+   if(input$evaluate == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
+   if(is.null(refsamp())) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
    samp <- nrow(refsamp())
    message <- paste(h5("Sample size:"), h3(samp), sep = " ")
    return(message)
