@@ -1,5 +1,3 @@
-#' @import shiny
-# library(shiny)
 shinyUI(navbarPage(title = "kidstats", windowTitle = "kidstats", theme = shinythemes::shinytheme("united"),
                    position = "fixed-top", inverse = TRUE, collapsible = TRUE,
                    header = tags$style(type="text/css", "body {padding-top: 70px;}"),
@@ -11,17 +9,21 @@ shinyUI(navbarPage(title = "kidstats", windowTitle = "kidstats", theme = shinyth
       radioButtons("transform", label = "Transformation",
         choices = list("None" = "none", "Square root" = "sqrt", "Cube root" = "cbrt"),
         selected = "none"),
-     br(),
-     actionButton("evaluate", "Evaluate")
+     br()
+     # actionButton("evaluate", "Evaluate")
     ),
 # Main panel
    mainPanel(fluidRow(column(10, offset = 1, tableOutput("el_table"))),
 # quick results panel
-    wellPanel(fluidRow(
-      column(4, htmlOutput("age")),
-      column(4, htmlOutput("rsq")),
-      column(4, htmlOutput("sampsize"))
-    )))
+    fluidRow(
+      column(1),
+      column(2, htmlOutput("lwr")),
+      column(2, htmlOutput("age")),
+      column(2, htmlOutput("upr")),
+      column(1),
+      column(2, htmlOutput("rsq")),
+      column(2, htmlOutput("sampsize"))
+    ))
   ),
 # tabPanel("Output", fluidRow(
 #

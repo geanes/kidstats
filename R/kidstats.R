@@ -1,5 +1,4 @@
-#' @import magrittr
-
+#' @import shiny
 #' @export
 kidstats <- function(){
   shiny::runApp(system.file('ksapp', package = 'kidstats'))

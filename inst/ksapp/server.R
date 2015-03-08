@@ -1,4 +1,3 @@
-#' @import shiny
 shinyServer(function(input, output) {
   # get the reference data from the selectize input
   refdata <- reactive({
@@ -69,7 +68,7 @@ shinyServer(function(input, output) {
   # create the reference data from the raw data
   refsamp <- reactive({
     if(is.null(refdata()) | is.null(elements())) return(NULL)
-    ref <- dplyr::select_(refdata(), .dots = c("age_y", names(elements()))) %>% na.omit
+    ref <- na.omit(dplyr::select_(refdata(), .dots = c("age_y", names(elements()))))
     return(ref)
   })
 
@@ -81,7 +80,7 @@ shinyServer(function(input, output) {
 
   # create the model and predict the age
   earth_mod <- reactive({
-    input$evaluate
+    # input$evaluate
     # exclude age_y from the variable dataset
     x <- dplyr::select_(refsamp(), ~-age_y)
     # extract age_y from the reference sample
@@ -91,42 +90,56 @@ shinyServer(function(input, output) {
       dplyr::select_(refsamp(), ~age_y)
     )
     # create the model and make predictions
-    model <- isolate(earth::earth(x = x, y = y))
+    model <- earth::earth(x = x, y = y, varmod.method = "lm", ncross = 30, nfold = 10)
     rsq <- round(model$grsq, digits = 4)
-    estage <- predict(model, newdata = elements())
+    estage <- predict(model, newdata = elements(), interval = "pint")
 
     estage <- switch(input$transform,
       sqrt = round(estage^2, digits = 2),
       cbrt = round(estage^3, digits = 2),
       round(estage, digits = 2)
     )
-
+    # prepare return object
     message <- c()
-    message[1] <- estage
-    message[2] <- rsq
+    message[1] <- estage[1]
+    message[2] <- estage[2]
+    message[3] <- estage[3]
+    message[4] <- rsq
     return(message)
   })
 
  # output the estage value
  output$age <- renderText({
-   if(is.null(refsamp())) return(paste(hr()))
-
+   if(is.null(refsamp())) return(print(""))
    estage <- earth_mod()[1]
    if(is.null(estage)) return(print(""))
    message <- paste(h5("Estimated age:"), h3(estage), sep = " ")
    return(message)
  })
-
+ # output lwr
+ output$lwr <- renderText({
+   if(is.null(refsamp())) return(print(""))
+   lwr <- earth_mod()[2]
+   if(is.null(lwr)) return(print(""))
+   message <- paste(h5("Lower PI:"), h3(lwr), sep = " ")
+   return(message)
+ })
+ # output upr
+ output$upr <- renderText({
+   if(is.null(refsamp())) return(print(""))
+   upr <- earth_mod()[3]
+   if(is.null(upr)) return(print(""))
+   message <- paste(h5("Upper PI:"), h3(upr), sep = " ")
+   return(message)
+ })
  # output Rsq
  output$rsq <- renderText({
    if(is.null(refsamp())) return(print(""))
-
-   rsq <- earth_mod()[2]
+   rsq <- earth_mod()[4]
    if(is.null(rsq)) return(print(""))
    message <- paste(h5("Model R^2:"), h3(rsq), sep = " ")
    return(message)
  })
-
  # output sample size
  output$sampsize <- renderText({
    if(is.null(refsamp())) return(print(""))
