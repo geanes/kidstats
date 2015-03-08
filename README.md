@@ -10,3 +10,7 @@ Installation:
 install.packages("devtools")
 devtools::install_github("geanes/kidstats")
 ```
+Usage:
+------
+
+Run: `r kidstats()`
