@@ -11,6 +11,8 @@ kidstats()
 \description{
 \code{kidstats} Shiny application to make sub-adult age and sex estimations
 based on long-bone measurements using MARS models.
+
+Kidstats shiny app call
 }
 \details{
 This package contains the following datasets:

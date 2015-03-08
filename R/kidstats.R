@@ -20,8 +20,9 @@
 NULL
 
 #' @import shiny
+NULL
+
 #' Kidstats shiny app call
-#'
 #' @examples
 #' kidstats()
 #' @export
