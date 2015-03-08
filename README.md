@@ -13,7 +13,7 @@ devtools::install_github("geanes/kidstats")
 Usage:
 ------
 
-``r
+```r
 library(kidstats)
 kidstats()
 ```
