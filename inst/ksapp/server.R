@@ -41,31 +41,31 @@ shinyServer(function(input, output) {
   el_names <- c("<h4>Elements</h4>", "<h5>Femur</h5>", "<h5>Tibia</h5>", "<h5>Humerus</h5>", "<h5>Radius</h5>", "<h5>Ulna</h5>")
   el_meas <- c("Max. Length", "Prox. Breadth", "MS. Breadth", "Dist. Breadth")
   mxl <- c("Max. Length",
-    "<input id='fmxl' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
-    "<input id='tmxl' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
-    "<input id='hmxl' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
-    "<input id='rmxl' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
-    "<input id='umxl' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>"
+    "<input id='fmxl' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
+    "<input id='tmxl' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
+    "<input id='hmxl' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
+    "<input id='rmxl' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
+    "<input id='umxl' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>"
   )
   pb <- c("Prox. Breadth",
     NA,
-    "<input id='tpb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
-    "<input id='hpb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
-    "<input id='rpb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
+    "<input id='tpb' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
+    "<input id='hpb' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
+    "<input id='rpb' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
     NA
   )
   msb <- c("MS. Breadth",
-    "<input id='fmsb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
-    "<input id='tmsb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
-    "<input id='hmsb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
-    "<input id='rmsb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
-    "<input id='umsb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>"
+    "<input id='fmsb' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
+    "<input id='tmsb' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
+    "<input id='hmsb' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
+    "<input id='rmsb' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
+    "<input id='umsb' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>"
   )
   db <- c("Dist. Breadth",
-    "<input id='fdb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
-    "<input id='tdb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
-    "<input id='hdb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
-    "<input id='rdb' class='shiny-bound-input' type='number' value='NA' min='0' max='1000'>",
+    "<input id='fdb' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
+    "<input id='tdb' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
+    "<input id='hdb' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
+    "<input id='rdb' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
     NA
   )
 
