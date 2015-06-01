@@ -1,7 +1,7 @@
 shinyUI(navbarPage(title = div(icon("child"), "kidstats"), windowTitle = "kidstats", theme = shinythemes::shinytheme("united"),
                    position = "fixed-top", inverse = TRUE, collapsible = TRUE,
-                   header = tags$style(type="text/css", "body {padding-top: 70px; padding-bottom: 70px;}"),
-                   footer=HTML("
+                   header = tags$style(type = "text/css", "body {padding-top: 70px; padding-bottom: 70px;}"),
+                   footer = HTML("
                      <div class = 'navbar navbar-inverse navbar-fixed-bottom'>
                        <div class = 'navbar-inner'>
                          <div class = 'container footer-margin-top'>
@@ -40,10 +40,15 @@ shinyUI(navbarPage(title = div(icon("child"), "kidstats"), windowTitle = "kidsta
 
 # Reference Sample table
   tabPanel("Reference Sample", icon = icon("table"), fluidRow(
-    column(10, offset = 1, dataTableOutput("table"))
-  ))
+    column(10, offset = 1, DT::dataTableOutput("table"))
+  )),
 
-# tabPanel("About", fluidRow(
-#   column(12, includeMarkdown("about.md"))
-# ))
+ tabPanel("About", icon = icon("info-circle"),
+    tabsetPanel(
+      tabPanel("Operation"),
+      tabPanel("Measurements"),
+      tabPanel("Statistics"),
+      tabPanel("References")
+    )
+ )
 ))
