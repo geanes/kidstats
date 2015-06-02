@@ -39,29 +39,29 @@ shinyServer(function(input, output) {
 
 # construct elements input table
   el_names <- c("<h4>Elements</h4>", "<h5>Femur</h5>", "<h5>Tibia</h5>", "<h5>Humerus</h5>", "<h5>Radius</h5>", "<h5>Ulna</h5>")
-  el_meas <- c("Max. Length", "Prox. Breadth", "MS. Breadth", "Dist. Breadth")
-  mxl <- c("Max. Length",
+  el_meas <- c("Diaphyseal Length", "Proximal Breadth", "Midshaft Breadth", "Distal Breadth")
+  mxl <- c("Diaphyseal Length",
     "<input id='fdl' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
     "<input id='tdl' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
     "<input id='hdl' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
     "<input id='rdl' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
     "<input id='udl' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>"
   )
-  pb <- c("Prox. Breadth",
+  pb <- c("Proximal Breadth",
     NA,
     "<input id='tpb' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
     "<input id='hpb' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
     "<input id='rpb' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
     NA
   )
-  msb <- c("MS. Breadth",
+  msb <- c("Midshaft Breadth",
     "<input id='fmsb' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
     "<input id='tmsb' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
     "<input id='hmsb' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
     "<input id='rmsb' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
     "<input id='umsb' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>"
   )
-  db <- c("Dist. Breadth",
+  db <- c("Distal Breadth",
     "<input id='fdb' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
     "<input id='tdb' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
     "<input id='hdb' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",

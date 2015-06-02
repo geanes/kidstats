@@ -45,10 +45,11 @@ shinyUI(navbarPage(title = div(icon("child"), "kidstats"), windowTitle = "kidsta
 
  tabPanel("About", icon = icon("info-circle"),
     tabsetPanel(
-      tabPanel("Operation"),
-      tabPanel("Measurements"),
-      tabPanel("Statistics"),
-      tabPanel("References")
+      tabPanel("Overview", includeMarkdown(system.file('ksapp/www/md/overview.md', package = 'kidstats'))),
+      tabPanel("Operation", includeMarkdown(system.file('ksapp/www/md/operation.md', package = 'kidstats'))),
+      tabPanel("Measurements", includeMarkdown(system.file('ksapp/www/md/measurements.md', package = 'kidstats'))),
+      tabPanel("Statistics", includeMarkdown(system.file('ksapp/www/md/statistics.md', package = 'kidstats'))),
+      tabPanel("References", includeMarkdown(system.file('ksapp/www/md/references.md', package = 'kidstats')))
     )
  )
 ))
