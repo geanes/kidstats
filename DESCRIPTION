@@ -19,5 +19,6 @@ Imports: earth,
     dplyr,
     shinythemes,
     magrittr,
-    DT
+    DT,
+    rmarkdown
 Suggests: knitr

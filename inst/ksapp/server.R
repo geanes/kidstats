@@ -163,4 +163,29 @@ shinyServer(function(input, output) {
    return(message)
  })
 
+ # Output report download handler
+ output$downloadReport <- downloadHandler(
+   filename = function() {
+     paste('kidstats-report', sep = '.', switch(
+       input$format, PDF = 'pdf', HTML = 'html', Word = 'docx'
+     ))
+   },
+
+   content = function(file) {
+     src <- system.file('ksapp/www/md/report.Rmd', package = 'kidstats')
+
+     # temporarily switch to the temp dir, in case you do not have write
+     # permission to the current working directory
+     owd <- setwd(tempdir())
+     on.exit(setwd(owd))
+     file.copy(src, 'report.Rmd')
+
+     out <- rmarkdown::render('report.Rmd', switch(
+       input$format,
+       PDF = rmarkdown::pdf_document(), HTML = rmarkdown::html_document(), Word = rmarkdown::word_document()
+     ))
+     file.rename(out, file)
+   }
+ )
+
 })

@@ -34,15 +34,22 @@ shinyUI(navbarPage(title = div(icon("child"), "kidstats"), windowTitle = "kidsta
       column(2, htmlOutput("sampsize"))
     ))
   ),
-# tabPanel("Output", fluidRow(
-#
-# )),
+
+# Output Panel
+ tabPanel("Output", icon = icon("file"),
+          sidebarPanel(
+            radioButtons('format', 'Report Format', c('PDF', 'HTML', 'Word'), inline = TRUE),
+            downloadButton('downloadReport')
+          ),
+          mainPanel()
+ ),
 
 # Reference Sample table
   tabPanel("Reference Sample", icon = icon("table"), fluidRow(
     column(10, offset = 1, DT::dataTableOutput("table"))
   )),
 
+# About Panel
  tabPanel("About", icon = icon("info-circle"),
     tabsetPanel(
       tabPanel("Overview", includeMarkdown(system.file('ksapp/www/md/overview.md', package = 'kidstats'))),
