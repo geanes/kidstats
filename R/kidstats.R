@@ -27,5 +27,5 @@ NULL
 #' kidstats()
 #' @export
 kidstats <- function(){
-  shiny::runApp(system.file('ksapp', package = 'kidstats'))
+  shiny::runApp(system.file('ksapp', package = 'kidstats'), launch.browser = TRUE)
 }
