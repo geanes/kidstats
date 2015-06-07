@@ -1,7 +1,7 @@
 Package: kidstats
 Type: Package
 Title: Age and sex estimation for subadults based on long bone measurements
-Version: 0.0.0.9003
+Version: 0.0.0.9004
 Date: 2015-03-08
 Authors@R: person("Glenn", "Eanes", , "glenn.eanes@gmail.com", role = c("aut", "cre"))
 Description: Uses MARS models from the "earth" package to estimate age and sex

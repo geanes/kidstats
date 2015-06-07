@@ -99,9 +99,9 @@ shinyServer(function(input, output) {
       dplyr::select_(refsamp(), ~AGE)
     )})
     # create age model and make predictions
-    model <- earth::earth(x = x, y = y, varmod.method = "lm", ncross = 30, nfold = 10)
-    rsq <- round(model$grsq, digits = 4)
-    estage <- predict(model, newdata = elements(), interval = "pint")
+    model_age <- earth::earth(x = x, y = y, varmod.method = "lm", ncross = 30, nfold = 10)
+    # rsq <- round(model_age$grsq, digits = 4)
+    estage <- predict(model_age, newdata = elements(), interval = "pint")
     # undo transform
     isolate({
     estage <- switch(input$transform,
@@ -110,19 +110,20 @@ shinyServer(function(input, output) {
       round(estage, digits = 2)
     )})
     # prepare return object
-    message <- c()
-    message[1] <- estage[1]
-    message[2] <- estage[2]
-    message[3] <- estage[3]
-    message[4] <- rsq
-    return(message)
+    # message <- c()
+    # message[1] <- estage[1]
+    # message[2] <- estage[2]
+    # message[3] <- estage[3]
+    # message[4] <- rsq
+    # return(message)
+    return(list(model_age, estage))
   })
 
  # output the estage value
  output$age <- renderText({
    if (input$evaluate == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
    if (is.null(refsamp())) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
-   estage <- earth_mod()[1]
+   estage <- earth_mod()[[2]][1]
    if (is.null(estage)) return(print(""))
    message <- paste(h5("Estimated age:"), h3(sprintf("%.2f", estage)), sep = " ")
    return(message)
@@ -131,7 +132,7 @@ shinyServer(function(input, output) {
  output$lwr <- renderText({
    if (input$evaluate == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
    if (is.null(refsamp())) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
-   lwr <- earth_mod()[2]
+   lwr <- earth_mod()[[2]][2]
    if (is.null(lwr)) return(print(""))
    message <- paste(h5("Lower PI:"), h3(sprintf("%.2f", lwr)), sep = " ")
    return(message)
@@ -140,7 +141,7 @@ shinyServer(function(input, output) {
  output$upr <- renderText({
    if (input$evaluate == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
    if (is.null(refsamp())) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
-   upr <- earth_mod()[3]
+   upr <- earth_mod()[[2]][3]
    if (is.null(upr)) return(print(""))
    message <- paste(h5("Upper PI:"), h3(sprintf("%.2f", upr)), sep = " ")
    return(message)
@@ -149,7 +150,7 @@ shinyServer(function(input, output) {
  output$rsq <- renderText({
    if (input$evaluate == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
    if (is.null(refsamp())) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
-   rsq <- earth_mod()[4]
+   rsq <- round(earth_mod()[[1]]$grsq, digits = 4)
    if (is.null(rsq)) return(print(""))
    message <- paste(h5("Model R^2:"), h3(sprintf("%.4f", rsq)), sep = " ")
    return(message)
@@ -182,7 +183,7 @@ shinyServer(function(input, output) {
 
      out <- rmarkdown::render('report.Rmd', switch(
        input$format,
-       PDF = rmarkdown::pdf_document(), HTML = rmarkdown::html_document(), Word = rmarkdown::word_document()
+       PDF = rmarkdown::pdf_document(), HTML = rmarkdown::html_document(css = system.file('ksapp/www/css/report.css', package = 'kidstats')), Word = rmarkdown::word_document()
      ))
      file.rename(out, file)
    }
