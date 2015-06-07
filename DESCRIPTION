@@ -22,5 +22,6 @@ Imports: earth,
     DT,
     rmarkdown,
     mda,
-    caret
+    caret,
+    pander
 Suggests: knitr
