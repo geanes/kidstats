@@ -37,7 +37,7 @@ shinyServer(function(input, output) {
     })
   })
 
-# construct elements input table
+  # construct elements input table
   el_names <- c("<h4>Elements</h4>", "<h5>Femur</h5>", "<h5>Tibia</h5>", "<h5>Humerus</h5>", "<h5>Radius</h5>", "<h5>Ulna</h5>")
   el_meas <- c("Diaphyseal Length", "Proximal Breadth", "Midshaft Breadth", "Distal Breadth")
   mxl <- c("Diaphyseal Length",
@@ -68,7 +68,7 @@ shinyServer(function(input, output) {
     "<input id='rdb' class='shiny-bound-input' type='number' value='NA' min='0' max='500'>",
     NA
   )
-
+  # render elements input table
   output$el_table <- renderTable({
     data.frame(el_names, mxl, pb, msb, db)
   }, sanitize.text.function = function(x) x, sanitize.rownames.function = function(x) x, sanitize.colnames.function = function(x) x, include.rownames = FALSE, include.colnames = FALSE)
@@ -76,7 +76,7 @@ shinyServer(function(input, output) {
   # create the reference data from the raw data
   refsamp <- reactive({
     if (is.null(refdata()) | is.null(elements())) return(NULL)
-    ref <- na.omit(dplyr::select_(refdata(), .dots = c("AGE", names(elements()))))
+    ref <- na.omit(dplyr::select_(refdata(), .dots = c("ID", "SEX", "AGE", names(elements()))))
     return(ref)
   })
 
@@ -86,23 +86,23 @@ shinyServer(function(input, output) {
     DT::datatable(refsamp(), rownames = FALSE, options = list(pageLength = 50))
   })
 
-  # create the model and predict the age
+  # create the models and predict age and sex using newdata
   earth_mod <- reactive({
     input$evaluate
-    # exclude AGE from the variable dataset
-    x <- dplyr::select_(refsamp(), ~-AGE)
-    # extract AGE from the reference sample
+    # exclude AGE, SEX, and ID from the variable dataset
+    x <- dplyr::select_(refsamp(), ~c(-AGE, -SEX, -ID))
+    # extract AGE from the reference sample and transform
     isolate({
     y <- switch(input$transform,
       sqrt = sqrt(dplyr::select_(refsamp(), ~AGE)),
       cbrt = (dplyr::select_(refsamp(), ~AGE)) ^ (1/3),
       dplyr::select_(refsamp(), ~AGE)
     )})
-    # create the model and make predictions
+    # create age model and make predictions
     model <- earth::earth(x = x, y = y, varmod.method = "lm", ncross = 30, nfold = 10)
     rsq <- round(model$grsq, digits = 4)
     estage <- predict(model, newdata = elements(), interval = "pint")
-
+    # undo transform
     isolate({
     estage <- switch(input$transform,
       sqrt = round(estage ^ 2, digits = 2),
@@ -127,7 +127,7 @@ shinyServer(function(input, output) {
    message <- paste(h5("Estimated age:"), h3(sprintf("%.2f", estage)), sep = " ")
    return(message)
  })
- # output lwr
+ # output lwr PI for estage
  output$lwr <- renderText({
    if (input$evaluate == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
    if (is.null(refsamp())) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
@@ -136,7 +136,7 @@ shinyServer(function(input, output) {
    message <- paste(h5("Lower PI:"), h3(sprintf("%.2f", lwr)), sep = " ")
    return(message)
  })
- # output upr
+ # output upr PI for estage
  output$upr <- renderText({
    if (input$evaluate == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
    if (is.null(refsamp())) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
@@ -145,7 +145,7 @@ shinyServer(function(input, output) {
    message <- paste(h5("Upper PI:"), h3(sprintf("%.2f", upr)), sep = " ")
    return(message)
  })
- # output Rsq
+ # output gRsq for earth model
  output$rsq <- renderText({
    if (input$evaluate == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
    if (is.null(refsamp())) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
@@ -154,7 +154,7 @@ shinyServer(function(input, output) {
    message <- paste(h5("Model R^2:"), h3(sprintf("%.4f", rsq)), sep = " ")
    return(message)
  })
- # output sample size
+ # output sample size for model dataset
  output$sampsize <- renderText({
    if (input$evaluate == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
    if (is.null(refsamp())) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
@@ -163,7 +163,7 @@ shinyServer(function(input, output) {
    return(message)
  })
 
- # Output report download handler
+ # output report download handler
  output$downloadReport <- downloadHandler(
    filename = function() {
      paste('kidstats-report', sep = '.', switch(

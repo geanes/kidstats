@@ -20,5 +20,7 @@ Imports: earth,
     shinythemes,
     magrittr,
     DT,
-    rmarkdown
+    rmarkdown,
+    mda,
+    caret
 Suggests: knitr
