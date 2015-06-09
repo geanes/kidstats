@@ -10,7 +10,7 @@ shinyUI(navbarPage(title = div(icon("child"), "kidstats"), windowTitle = "kidsta
                        </div>
                      </div>"),
   tabPanel("Input", value = "input", icon = icon("gear"),
-# Sidebar
+    # Sidebar
     sidebarPanel(
       selectizeInput("refsamp", "Reference Sample", choices = c("South Africa" = "za"), selected = "za", multiple = TRUE, width = "200px"),
      # fileInput("refsamp", label = "Reference data"),
@@ -20,10 +20,10 @@ shinyUI(navbarPage(title = div(icon("child"), "kidstats"), windowTitle = "kidsta
      br(),
      actionButton("evaluate", "Evaluate", icon = icon("calculator"))
     ),
-# Main panel
+   # Main panel
    mainPanel(fluidRow(column(10, offset = 1, tableOutput("el_table"))),
    hr(),
-# quick results panel
+    # quick results panel
     fluidRow(
       column(1),
       column(2, htmlOutput("lwr")),
@@ -35,21 +35,42 @@ shinyUI(navbarPage(title = div(icon("child"), "kidstats"), windowTitle = "kidsta
     ))
   ),
 
-# Output Panel
+ # Output Panel
  tabPanel("Output", icon = icon("file"),
           sidebarPanel(
             radioButtons('format', 'Report Format', c('PDF', 'HTML', 'Word'), inline = TRUE),
             downloadButton('downloadReport')
           ),
-          mainPanel()
+          mainPanel(
+            tabsetPanel(
+              tabPanel("Age Estimation",
+                  conditionalPanel(condition = "input.evaluate >= 1",
+                    h2("Age Estimation"),
+                    hr(),
+                    verbatimTextOutput("earth_pred"),
+                    verbatimTextOutput("earth_samp"),
+                    hr(),
+                    h4("Model Summary"),
+                    verbatimTextOutput("earth_summary"),
+                    h4("Variable Importance"),
+                    verbatimTextOutput("earth_varimp")
+                  )
+              ),
+              tabPanel("Sex Estimation",
+                  conditionalPanel(condition = "input.evaluate >= 1"
+
+                  )
+              )
+            )
+          )
  ),
 
-# Reference Sample table
+  # Reference Sample table
   tabPanel("Reference Sample", icon = icon("table"), fluidRow(
     column(10, offset = 1, DT::dataTableOutput("table"))
   )),
 
-# About Panel
+ # About Panel
  tabPanel("About", icon = icon("info-circle"),
     tabsetPanel(
       tabPanel("Overview", includeMarkdown(system.file('ksapp/www/md/overview.md', package = 'kidstats'))),

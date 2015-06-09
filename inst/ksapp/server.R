@@ -100,7 +100,6 @@ shinyServer(function(input, output) {
     )})
     # create age model and make predictions
     model_age <- earth::earth(x = x, y = y, varmod.method = "lm", ncross = 30, nfold = 10)
-    # rsq <- round(model_age$grsq, digits = 4)
     estage <- predict(model_age, newdata = elements(), interval = "pint")
     # undo transform
     isolate({
@@ -109,17 +108,33 @@ shinyServer(function(input, output) {
       cbrt = round(estage ^ 3, digits = 2),
       round(estage, digits = 2)
     )})
-    # prepare return object
-    # message <- c()
-    # message[1] <- estage[1]
-    # message[2] <- estage[2]
-    # message[3] <- estage[3]
-    # message[4] <- rsq
-    # return(message)
     return(list(model_age, estage))
   })
 
- # output the estage value
+ # output earth model predictions
+ output$earth_pred <- renderPrint({
+   pred <- earth_mod()[[2]]
+   pred <- pred[, c(2, 1, 3)]
+   return(pred)
+ })
+ # output sample size used in model
+ output$earth_samp <- renderPrint({
+   sampsize <- nrow(refsamp())
+   message <- paste0("Sample size used in model: ", sampsize)
+   return(message)
+ })
+ # output earth model summary
+ output$earth_summary <- renderPrint({
+   if (input$evaluate == 0) return(NULL)
+   summary(earth_mod()[[1]])
+ })
+ # output earth model variable importance
+ output$earth_varimp <- renderPrint({
+   if (input$evaluate == 0) return(NULL)
+   caret::varImp(earth_mod()[[1]])
+ })
+
+ # output the estage value for quick output
  output$age <- renderText({
    if (input$evaluate == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
    if (is.null(refsamp())) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
@@ -128,7 +143,7 @@ shinyServer(function(input, output) {
    message <- paste(h5("Estimated age:"), h3(sprintf("%.2f", estage)), sep = " ")
    return(message)
  })
- # output lwr PI for estage
+ # output lwr PI for quick output
  output$lwr <- renderText({
    if (input$evaluate == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
    if (is.null(refsamp())) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
@@ -137,7 +152,7 @@ shinyServer(function(input, output) {
    message <- paste(h5("Lower PI:"), h3(sprintf("%.2f", lwr)), sep = " ")
    return(message)
  })
- # output upr PI for estage
+ # output upr PI for quick output
  output$upr <- renderText({
    if (input$evaluate == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
    if (is.null(refsamp())) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
@@ -146,7 +161,7 @@ shinyServer(function(input, output) {
    message <- paste(h5("Upper PI:"), h3(sprintf("%.2f", upr)), sep = " ")
    return(message)
  })
- # output gRsq for earth model
+ # output gRsq for quick output
  output$rsq <- renderText({
    if (input$evaluate == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
    if (is.null(refsamp())) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
@@ -155,7 +170,7 @@ shinyServer(function(input, output) {
    message <- paste(h5("Model R^2:"), h3(sprintf("%.4f", rsq)), sep = " ")
    return(message)
  })
- # output sample size for model dataset
+ # output sample size for quick output
  output$sampsize <- renderText({
    if (input$evaluate == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
    if (is.null(refsamp())) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
