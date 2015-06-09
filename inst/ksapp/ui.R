@@ -53,7 +53,12 @@ shinyUI(navbarPage(title = div(icon("child"), "kidstats"), windowTitle = "kidsta
                     h4("Model Summary"),
                     verbatimTextOutput("earth_summary"),
                     h4("Variable Importance"),
-                    verbatimTextOutput("earth_varimp")
+                    verbatimTextOutput("earth_varimp"),
+                    hr(),
+                    h3("Diagnostic Plots"),
+                    plotOutput("earth_modsel"),
+                    plotOutput("earth_qq"),
+                    plotOutput("earth_rvf")
                   )
               ),
               tabPanel("Sex Estimation",

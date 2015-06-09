@@ -80,28 +80,26 @@ shinyServer(function(input, output) {
     return(ref)
   })
 
-  # output the reference data in the reference sample section of the ui
-  output$table <- DT::renderDataTable({
-    if (is.null(refsamp())) return(NULL)
-    DT::datatable(refsamp(), rownames = FALSE, options = list(pageLength = 50))
-  })
+#################################### MODEL ####################################
 
   # create the models and predict age and sex using newdata
   earth_mod <- reactive({
     input$evaluate
-    # exclude AGE, SEX, and ID from the variable dataset
-    x <- dplyr::select_(refsamp(), ~c(-AGE, -SEX, -ID))
-    # extract AGE from the reference sample and transform
+    # exclude SEX and ID from the age model dataset and transform AGE
+    earth_data <- dplyr::select_(refsamp(), ~c(-SEX, -ID))
     isolate({
-    y <- switch(input$transform,
-      sqrt = sqrt(dplyr::select_(refsamp(), ~AGE)),
-      cbrt = (dplyr::select_(refsamp(), ~AGE)) ^ (1/3),
-      dplyr::select_(refsamp(), ~AGE)
-    )})
+      earth_data$AGE <- switch(input$transform,
+        sqrt = sqrt(earth_data$AGE),
+        cbrt = (earth_data$AGE) ^ (1/3),
+        earth_data$AGE
+      )
+    })
+    # create formula
+    earth_formula <- as.formula('AGE ~ .')
     # create age model and make predictions
-    model_age <- earth::earth(x = x, y = y, varmod.method = "lm", ncross = 30, nfold = 10)
+    model_age <- earth::earth(earth_formula, data = earth_data, varmod.method = "lm", ncross = 30, nfold = 10)
     estage <- predict(model_age, newdata = elements(), interval = "pint")
-    # undo transform
+    # undo AGE transform
     isolate({
     estage <- switch(input$transform,
       sqrt = round(estage ^ 2, digits = 2),
@@ -110,6 +108,15 @@ shinyServer(function(input, output) {
     )})
     return(list(model_age, estage))
   })
+
+
+############################# OUTPUT ##########################################
+
+ # output the reference data in the reference sample section of the ui
+ output$table <- DT::renderDataTable({
+   if (is.null(refsamp())) return(NULL)
+   DT::datatable(refsamp(), rownames = FALSE, options = list(pageLength = 50))
+ })
 
  # output earth model predictions
  output$earth_pred <- renderPrint({
@@ -132,6 +139,18 @@ shinyServer(function(input, output) {
  output$earth_varimp <- renderPrint({
    if (input$evaluate == 0) return(NULL)
    caret::varImp(earth_mod()[[1]])
+ })
+ # output earth model selection plot
+ output$earth_modsel <- renderPlot({
+   plot(earth_mod()[[1]], which = 1)
+ })
+ # output earth qq plot
+ output$earth_qq <- renderPlot({
+   plot(earth_mod()[[1]], which = 4)
+ })
+ # output earth rvf plot
+ output$earth_rvf <- renderPlot({
+   plot(earth_mod()[[1]], which = 3, level = .95, info = TRUE)
  })
 
  # output the estage value for quick output
