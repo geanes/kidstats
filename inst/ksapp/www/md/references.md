@@ -9,6 +9,8 @@ This would not have been possible without the assistance of Glenn Eanes, Stephen
 <br><br>
 - Efron B, Tibshirani R. 1993. An introduction to the bootstrap. New York: Chapman & Hall.
 <br><br>
+- Efron B. 1979. Bootstrap Methods: Another Look at the Jackknife. Ann Statist 7:1–26.
+<br><br>
 - Fazekas S, Kósa F. 1978. Forensic Fetal Osteology. Budapest: Akademiai Kiado.
 <br><br>
 - Friedman J. 1993. Fast MARS. Stanford, CA: Department of Statistics, Stanford University.
@@ -21,7 +23,13 @@ This would not have been possible without the assistance of Glenn Eanes, Stephen
 <br><br>
 - Hastie T, Tibshirani R, J Friedman. 2009. The Elements of Statistical Learning: Data Mining, Inference, and Prediction. 2nd ed. New York: Springer-Verlag.
 <br><br>
+- Kohavi R. 1995. A study of cross-validation and bootstrap for accuracy estimation and model selection. In: Proceedings of the 14th international joint conference on Artificial intelligence - Volume 2. IJCAI’95. San Francisco, CA, USA: Morgan Kaufmann Publishers Inc. p 1137–1143. Available from: http://dl.acm.org/citation.cfm?id=1643031.1643047
+<br><br>
+- Kuhn M. 2015. caret: Classification and Regression Training. Available from: http://CRAN.R-project.org/package=caret
+<br><br>
 - Leisch F, Hornik K, Ripley BD. 2011. mda: Mixture and flexible discriminant analysis.
+<br><br>
+- Michie D, Spiegelhalter DJ, Taylor CC, Campbell J eds. 1994. Machine learning, neural and statistical classification. Upper Saddle River, NJ, USA: Ellis Horwood.
 <br><br>
 - Milborrow S. 2013. earth: Multivariate Adaptive Regression Spline Models. Available from: http://CRAN.R-project.org/package=earth
 <br><br>
@@ -43,5 +51,5 @@ This would not have been possible without the assistance of Glenn Eanes, Stephen
 <br><br>
 - Stull KE, L’Abbé EN, Ousley SD. 2014. Using multivariate adaptive regression splines to estimate subadult age from diaphyseal dimensions. Am J Phys Anthropol 154:376–386.
 <br><br>
-- De Veaux RD, Ungar LH. Multicollinearity: A tale of two nonparametric regressions.
+- De Veaux RD, Ungar LH. Multicollinearity: A tale of two nonparametric regressions. In: Oldford RW, editor. Selecting Models from Data. Lecture Notes in Statistics. Springer New York. p 393–402. Available from: http://link.springer.com/chapter/10.1007/978-1-4612-2660-4_40
 <br><br>
