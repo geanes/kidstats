@@ -20,6 +20,7 @@
 NULL
 
 #' @import shiny
+#' @import earth
 NULL
 
 #' Kidstats shiny app call

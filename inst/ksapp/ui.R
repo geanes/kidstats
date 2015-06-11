@@ -13,12 +13,17 @@ shinyUI(navbarPage(title = div(icon("child"), "kidstats"), windowTitle = "kidsta
     # Sidebar
     sidebarPanel(
       selectizeInput("refsamp", "Reference Sample", choices = c("South Africa" = "za"), selected = "za", multiple = TRUE, width = "200px"),
-     # fileInput("refsamp", label = "Reference data"),
+      hr(),
+      h4("Age"), br(),
       radioButtons("transform", label = "Transformation",
         choices = list("None" = "none", "Square root" = "sqrt", "Cube root" = "cbrt"),
         selected = "none"),
-     br(),
-     actionButton("evaluate", "Evaluate", icon = icon("calculator"))
+      selectInput("ex_age", "Exclude from model:", multiple = TRUE, choices = c()),
+      # hr(),
+      # h4("Sex"), br(),
+      hr(),
+      br(),
+      actionButton("evaluate", "Evaluate", icon = icon("calculator"))
     ),
    # Main panel
    mainPanel(fluidRow(column(10, offset = 1, tableOutput("el_table"))),
@@ -70,10 +75,10 @@ shinyUI(navbarPage(title = div(icon("child"), "kidstats"), windowTitle = "kidsta
           )
  ),
 
-  # Reference Sample table
-  tabPanel("Reference Sample", icon = icon("table"), fluidRow(
-    column(10, offset = 1, DT::dataTableOutput("table"))
-  )),
+#   # Reference Sample table
+#   tabPanel("Reference Sample", icon = icon("table"), fluidRow(
+#     column(10, offset = 1, DT::dataTableOutput("table"))
+#   )),
 
  # About Panel
  tabPanel("About", icon = icon("info-circle"),

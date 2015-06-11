@@ -8,7 +8,6 @@ Installation:
 
 ```r
 install.packages("devtools")
-devtools::install_github("rstudio/DT")
 devtools::install_github("geanes/kidstats")
 ```
 Usage:

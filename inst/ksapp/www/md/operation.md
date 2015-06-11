@@ -8,14 +8,16 @@
 ----
 
 ### Age
-1. On the __Input__ page, choose the type of __Transformation__ on age to be performed.  
-2. Push the __Evaluate__ button for the analyses to be performed.
+1. On the __Input__ page, choose the type of __Transformation__ on age to be performed. 
+2. Use the __Exclude__ box if you wish to exclude measurements from the model building process.
+3. Push the __Evaluate__ button for the analyses to be performed.
+
 *Comment: A transformation isn't necessary but may provide a better fit, depending on the measurements available. It is acceptable to use all transformation options and choose the fit with the smallest prediction intervals. The results, no matter what transformation was chosen, should be fairly similar.*
 
 #### Age: Output
 Upon evaluation, some output is provided directly beneath the measurement input boxes. Specifically, the point estimate, upper and lower 95% prediction intervals, the R-squared value for the model, and the sample size used in the evaluation are provided. Extended output is available from the __Output__ page.
 <br><br>
-Only individuals from the reference sample with all the measurements that were entered on the __Input__ page will be used in model creation. Individuals used in model creation will be listed on the __Reference Sample__ page. 
+Only individuals from the reference sample with all the measurements that were entered on the __Input__ page (and not explicitly excluded) will be used in model creation.
 
 ----
 
