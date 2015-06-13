@@ -14,30 +14,40 @@ shinyUI(navbarPage(title = div(icon("child"), "kidstats"), windowTitle = "kidsta
     sidebarPanel(
       selectizeInput("refsamp", "Reference Sample", choices = c("South Africa" = "za"), selected = "za", multiple = TRUE, width = "200px"),
       hr(),
-      h4("Age"), br(),
+      h4("Age"),
       radioButtons("transform", label = "Transformation",
         choices = list("None" = "none", "Square root" = "sqrt", "Cube root" = "cbrt"),
         selected = "none"),
       selectInput("ex_age", "Exclude from model:", multiple = TRUE, choices = c()),
-      # hr(),
-      # h4("Sex"), br(),
+      actionButton("evaluate_age", "Evaluate Age", icon = icon("calculator")),
       hr(),
-      br(),
-      actionButton("evaluate", "Evaluate", icon = icon("calculator"))
+      h4("Sex"),
+      selectInput("ex_sex", "Exclude from model:", multiple = TRUE, choices = c()),
+      actionButton("evaluate_sex", "Evaluate Sex", icon = icon("calculator"))
     ),
-   # Main panel
-   mainPanel(fluidRow(column(10, offset = 1, tableOutput("el_table"))),
-   hr(),
-    # quick results panel
-    fluidRow(
-      column(1),
-      column(2, htmlOutput("lwr")),
-      column(2, htmlOutput("age")),
-      column(2, htmlOutput("upr")),
-      column(1),
-      column(2, htmlOutput("rsq")),
-      column(2, htmlOutput("sampsize"))
-    ))
+    # Main panel
+    mainPanel(fluidRow(column(10, offset = 1, tableOutput("el_table"))),
+      hr(),
+      # quick results panel
+      fluidRow(
+        column(1),
+        column(2, htmlOutput("lwr")),
+        column(2, htmlOutput("age")),
+        column(2, htmlOutput("upr")),
+        column(1),
+        column(2, htmlOutput("rsq")),
+        column(2, htmlOutput("sampsize"))
+      ),
+      hr(),
+      fluidRow(
+        column(1),
+        column(3, htmlOutput("pred_f")),
+        column(3, htmlOutput("pred_m")),
+        column(1),
+        column(2),
+        column(2, htmlOutput("sampsize_sex"))
+      )
+    )
   ),
 
  # Output Panel
@@ -49,7 +59,7 @@ shinyUI(navbarPage(title = div(icon("child"), "kidstats"), windowTitle = "kidsta
           mainPanel(
             tabsetPanel(
               tabPanel("Age Estimation",
-                  conditionalPanel(condition = "input.evaluate >= 1",
+                  conditionalPanel(condition = "input.evaluate_age >= 1",
                     h2("Age Estimation"),
                     hr(),
                     verbatimTextOutput("earth_pred"),
@@ -67,8 +77,23 @@ shinyUI(navbarPage(title = div(icon("child"), "kidstats"), windowTitle = "kidsta
                   )
               ),
               tabPanel("Sex Estimation",
-                  conditionalPanel(condition = "input.evaluate >= 1"
-
+                  conditionalPanel(condition = "input.evaluate_sex >= 1",
+                    h2("Sex Estimation"),
+                    hr(),
+                    verbatimTextOutput("fda_pred"),
+                    verbatimTextOutput("fda_samp"),
+                    hr(),
+                    h4("FDA Model Coefficients"),
+                    verbatimTextOutput("fda_coef"),
+                    h4("Variable Importance"),
+                    verbatimTextOutput("fda_varimp"),
+                    h4("Confusion Matrix"),
+                    verbatimTextOutput("fda_confusion"),
+                    h4("Classification Table"),
+                    verbatimTextOutput("fda_ct"),
+                    h4("Bootstrapped Classification Accuracy"),
+                    verbatimTextOutput("fda_bca"),
+                    plotOutput("fda_bca_plot")
                   )
               )
             )

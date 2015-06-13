@@ -19,8 +19,7 @@
 #' @name kidstats
 NULL
 
-#' @import shiny
-#' @import earth
+#' @import shiny, earth, mda
 NULL
 
 #' Kidstats shiny app call

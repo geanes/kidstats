@@ -1,7 +1,7 @@
 shinyServer(function(input, output, session) {
   # get the reference data from the selectize input
   refdata <- reactive({
-    input$evaluate
+    input$evaluate_age || input$evaluate_sex
     isolate({
     if (length(input$refsamp) == 0) return(NULL)
     switch(input$refsamp,
@@ -73,11 +73,12 @@ shinyServer(function(input, output, session) {
   })
 
   # render exclude lists
-  # change values for input$ex_age
+  # change values for ex_age and ex_sex
    observe({
      opts <- c()
      if (length(elements() != 0) && !is.null(elements())) opts <- names(elements())
      updateSelectInput(session, "ex_age", choices = opts)
+     updateSelectInput(session, "ex_sex", choices = opts)
    })
 
   # create the reference data from the raw data
@@ -97,20 +98,40 @@ shinyServer(function(input, output, session) {
     return(samp)
   })
 
+  sex_samp <- reactive({
+    if (is.null(refsamp())) return(NULL)
+    samp <- dplyr::select_(refsamp(), .dots = c("-ID", "-AGE"))
+    if (length(input$ex_sex) != 0) {
+      ex <- paste0("-", input$ex_sex)
+      samp <- na.omit(dplyr::select_(samp, .dots = ex))
+    } else {samp <- na.omit(samp)}
+    return(samp)
+  })
+
+############################## UTILITY FUNCTIONS ##############################
+
+boot_accuracy_fda <- function(data, indices, formula){
+  d <- data[indices,]
+  fit <- mda::fda(formula, keep.fitted = TRUE, method = earth, keepxy = TRUE, data = d)
+  ct.all <- mda::confusion(predict(fit, prior = c(1/2, 1/2)), d$SEX)
+  s <- sum(diag(prop.table(ct.all)))
+  return(s)
+}
+
 #################################### MODEL ####################################
 
   # create the models and predict age and sex using newdata
   earth_mod <- reactive({
-    input$evaluate
+    input$evaluate_age
     isolate({
       if (is.null(age_samp()) || is.null(elements())) return(NULL)
-      # exclude SEX and ID from the age model dataset and transform AGE
       earth_data <- age_samp()
-        earth_data$AGE <- switch(input$transform,
-          sqrt = sqrt(earth_data$AGE),
-          cbrt = (earth_data$AGE) ^ (1/3),
-          earth_data$AGE
-        )
+      # transform age
+      earth_data$AGE <- switch(input$transform,
+        sqrt = sqrt(earth_data$AGE),
+        cbrt = (earth_data$AGE) ^ (1/3),
+        earth_data$AGE
+      )
       # create formula
       earth_formula <- as.formula('AGE ~ .')
       # create age model and make predictions
@@ -123,6 +144,24 @@ shinyServer(function(input, output, session) {
         round(estage, digits = 2)
       )
       return(list(model_age, estage))
+    })
+  })
+
+  fda_mod <- reactive({
+    input$evaluate_sex
+    isolate({
+      if (is.null(sex_samp()) || is.null(elements())) return(NULL)
+      fda_data <- sex_samp()
+      # create formula
+      fda_formula <- as.formula('SEX ~ .')
+      # create sex model
+      model_sex <- mda::fda(fda_formula, data = fda_data, method = earth, keep.fitted = TRUE, keepxy = TRUE)
+      # predict sex
+      estsex <- data.frame(predict(model_sex, newdata = elements(), type = "posterior"))
+      # bootstrap classification accuracy
+      fda_bca <- boot::boot(fda_data, statistic = boot_accuracy_fda, formula = fda_formula, R = 1000)
+      # return model and age estimation
+      return(list(model_sex, estsex, fda_bca))
     })
   })
 
@@ -150,12 +189,12 @@ shinyServer(function(input, output, session) {
  })
  # output earth model summary
  output$earth_summary <- renderPrint({
-   if (input$evaluate == 0) return(NULL)
+   if (input$evaluate_age == 0) return(NULL)
    summary(earth_mod()[[1]])
  })
  # output earth model variable importance
  output$earth_varimp <- renderPrint({
-   if (input$evaluate == 0) return(NULL)
+   if (input$evaluate_age == 0) return(NULL)
    caret::varImp(earth_mod()[[1]])
  })
  # output earth model selection plot
@@ -171,9 +210,52 @@ shinyServer(function(input, output, session) {
    plot(earth_mod()[[1]], which = 3, level = .95, info = TRUE)
  })
 
+# output sex model predictions
+output$fda_pred <- renderPrint({
+  if (input$evaluate_sex == 0) return(NULL)
+  fda_mod()[[2]]
+})
+# output sample size used in model
+ output$fda_samp <- renderPrint({
+   sampsize <- nrow(sex_samp())
+   message <- paste0("Sample size used in model: ", sampsize)
+   return(message)
+ })
+# output fda coefficients
+output$fda_coef <- renderPrint({
+  if (input$evaluate_sex == 0) return(NULL)
+  coef(fda_mod()[[1]])
+})
+# output fda model variable importance
+output$fda_varimp <- renderPrint({
+  if (input$evaluate_sex == 0) return(NULL)
+  caret::varImp(fda_mod()[[1]])
+})
+# output fda confusion matrix
+output$fda_confusion <- renderPrint({
+  if (input$evaluate_sex == 0) return(NULL)
+  mda::confusion(predict(fda_mod()[[1]], prior = c(1/2, 1/2)), sex_samp()$SEX)
+})
+# output classification table
+output$fda_ct <- renderPrint({
+  if (input$evaluate_sex == 0) return(NULL)
+  ct <- mda::confusion(predict(fda_mod()[[1]], prior = c(1/2, 1/2)), sex_samp()$SEX)
+  diag(prop.table(ct, 1))
+})
+# output bootstraped classification accuracy
+output$fda_bca <- renderPrint({
+  if (input$evaluate_sex == 0) return(NULL)
+  fda_mod()[[3]]
+})
+output$fda_bca_plot <- renderPlot({
+  plot(fda_mod()[[3]])
+})
+
+################################ QUICK OUTPUT ############################
+
  # output the estage value for quick output
  output$age <- renderText({
-   if (input$evaluate == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
+   if (input$evaluate_age == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
    if (is.null(earth_mod()) || is.null(elements())) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
    estage <- earth_mod()[[2]][1]
    if (is.null(estage)) return(print(""))
@@ -182,7 +264,7 @@ shinyServer(function(input, output, session) {
  })
  # output lwr PI for quick output
  output$lwr <- renderText({
-   if (input$evaluate == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
+   if (input$evaluate_age == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
    if (is.null(earth_mod()) || is.null(elements())) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
    lwr <- earth_mod()[[2]][2]
    if (is.null(lwr)) return(print(""))
@@ -191,7 +273,7 @@ shinyServer(function(input, output, session) {
  })
  # output upr PI for quick output
  output$upr <- renderText({
-   if (input$evaluate == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
+   if (input$evaluate_age == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
    if (is.null(earth_mod()) || is.null(elements())) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
    upr <- earth_mod()[[2]][3]
    if (is.null(upr)) return(print(""))
@@ -200,19 +282,44 @@ shinyServer(function(input, output, session) {
  })
  # output gRsq for quick output
  output$rsq <- renderText({
-   if (input$evaluate == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
+   if (input$evaluate_age == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
    if (is.null(earth_mod()) || is.null(elements())) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
    rsq <- round(earth_mod()[[1]]$grsq, digits = 4)
    if (is.null(rsq)) return(print(""))
    message <- paste(h5("Model R^2:"), h3(sprintf("%.4f", rsq)), sep = " ")
    return(message)
  })
- # output sample size for quick output
+ # output age sample size for quick output
  output$sampsize <- renderText({
-   if (input$evaluate == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
+   if (input$evaluate_age == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
    if (is.null(age_samp())) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
    samp <- nrow(age_samp())
    message <- paste(h5("Sample size:"), h3(samp), sep = " ")
+   return(message)
+ })
+
+ # output sex sample size for quick output
+ output$sampsize_sex <- renderText({
+   if (input$evaluate_age == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
+   if (is.null(sex_samp())) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
+   samp <- nrow(sex_samp())
+   message <- paste(h5("Sample size:"), h3(samp), sep = " ")
+   return(message)
+ })
+ # output sex posterior F
+ output$pred_f <- renderText({
+   if (input$evaluate_sex == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
+   if (is.null(fda_mod()) || is.null(elements())) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
+   post_f <- round(fda_mod()[[2]]$F, digits = 4)
+   message <- paste(h5("Posterior Female:"), h3(sprintf("%.4f", post_f)), sep = " ")
+   return(message)
+ })
+ # output sex posterior M
+ output$pred_m <- renderText({
+   if (input$evaluate_sex == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
+   if (is.null(fda_mod()) || is.null(elements())) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
+   post_m <- round(fda_mod()[[2]]$M, digits = 4)
+   message <- paste(h5("Posterior Male:"), h3(sprintf("%.4f", post_m)), sep = " ")
    return(message)
  })
 
