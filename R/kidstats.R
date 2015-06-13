@@ -19,7 +19,16 @@
 #' @name kidstats
 NULL
 
-#' @import shiny, earth, mda
+#' @import shiny
+NULL
+
+#' @import earth
+NULL
+
+#' @import mda
+NULL
+
+#' @importFrom caret varImp
 NULL
 
 #' Kidstats shiny app call
