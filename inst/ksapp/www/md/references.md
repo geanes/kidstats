@@ -1,5 +1,5 @@
 ## Acknowledgements
-This would not have been possible without the assistance of Glenn Eanes, Stephen Milborrow, and Ericka L’Abbé. If not for the permission granted by Drs. Thomas Blake and Lorna Martin at Red Cross War Memorial Children’s Hospital and Forensic Pathology Services (Salt River), respectively, the sample would not have ever been amassed.
+This would not have been possible without the assistance of Glenn Eanes, Stephen Milborrow, Ericka L’Abbé, and Steve Ousley. Drs. Thomas Blake (Red Cross War Memorial Children’s Hospital) and Lorna Martin (Forensic Pathology Services, Salt River) graciously provided access to the radiographic images.
 <br><br>
 
 ---
