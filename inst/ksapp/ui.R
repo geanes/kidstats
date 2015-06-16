@@ -1,4 +1,4 @@
-shinyUI(navbarPage(title = div(icon("child"), "kidstats"), windowTitle = "kidstats", theme = shinythemes::shinytheme("united"),
+shinyUI(navbarPage(title = div(icon("child"), "KidStats"), windowTitle = "KidStats", theme = shinythemes::shinytheme("united"),
                    position = "fixed-top", inverse = TRUE, collapsible = TRUE,
                    header = tags$style(type = "text/css", "body {padding-top: 70px; padding-bottom: 70px;}"),
                    footer = HTML("
@@ -22,6 +22,7 @@ shinyUI(navbarPage(title = div(icon("child"), "kidstats"), windowTitle = "kidsta
       actionButton("evaluate_age", "Evaluate Age", icon = icon("calculator")),
       hr(),
       h4("Sex"),
+      checkboxInput("bstrap_ca", label = "Bootstrap Classification Accuracy", value = FALSE),
       selectInput("ex_sex", "Exclude from model:", multiple = TRUE, choices = c()),
       actionButton("evaluate_sex", "Evaluate Sex", icon = icon("calculator"))
     ),
@@ -53,7 +54,8 @@ shinyUI(navbarPage(title = div(icon("child"), "kidstats"), windowTitle = "kidsta
  # Output Panel
  tabPanel("Output", icon = icon("file"),
           sidebarPanel(
-            radioButtons('format', 'Report Format', c('PDF', 'HTML', 'Word'), inline = TRUE),
+            # radioButtons('format', 'Report Format', c('PDF', 'HTML', 'Word'), inline = TRUE),
+            radioButtons('format', 'Report Format', c('HTML', 'Word'), inline = TRUE),
             downloadButton('downloadReport')
           ),
           mainPanel(
@@ -91,9 +93,17 @@ shinyUI(navbarPage(title = div(icon("child"), "kidstats"), windowTitle = "kidsta
                     verbatimTextOutput("fda_confusion"),
                     h4("Classification Table"),
                     verbatimTextOutput("fda_ct"),
-                    h4("Bootstrapped Classification Accuracy"),
-                    verbatimTextOutput("fda_bca"),
-                    plotOutput("fda_bca_plot")
+                    conditionalPanel(condition = "input.bstrap_ca == false",
+                      h4("Classification Accuracy")
+                    ),
+                    conditionalPanel(condition = "input.bstrap_ca == true",
+                      h4("Bootstrapped Classification Accuracy")
+                    ),
+                    verbatimTextOutput("fda_ca"),
+                    conditionalPanel(condition = "input.bstrap_ca == true",
+                      plotOutput("fda_bca_plot")
+                    )
+
                   )
               )
             )
