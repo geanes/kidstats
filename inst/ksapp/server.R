@@ -231,7 +231,7 @@ shinyServer(function(input, output, session) {
   # output fda coefficients
   output$fda_coef <- renderPrint({
     if (input$evaluate_sex == 0) return(NULL)
-    coef(fda_mod()[[1]])
+    coef(fda_mod()[[1]], type = "discriminant")
   })
   # output fda model variable importance
   output$fda_varimp <- renderPrint({
