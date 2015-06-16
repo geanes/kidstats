@@ -1,7 +1,7 @@
 # Measurements
 Eighteen measurements were collected from the six long bones from each image with custom software designed for Lodox (Diagnostic Viewing Software). Length and breadth measurement definitions were modified from fetal osteology or from adult postcranial standard measurements (Fazekas and Kósa, 1978; Moore-Jansen et al., 1994). 
 <br><br>
-Written definitions are provided below. Pay attention to the ‘Comment’ as this usually provides some insight to landmark location placement. Unlike cranial landmarks, none of the measurements are Type I. Measurements should be collected only when the bone is in anatomical position. If measurements are being collected from radiographic images, ensure it is an imaging technique that does not generate significant levels of distortion.
+Written definitions are provided below. Pay attention to the *‘Comment’* as this usually provides some insight to landmark location placement. Unlike cranial landmarks, none of the measurements are Type I. Measurements should be collected only when the bone is in anatomical position. If measurements are being collected from radiographic images, ensure it is an imaging technique that does not generate significant levels of distortion.
 
 ---
 

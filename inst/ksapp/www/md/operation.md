@@ -14,7 +14,7 @@ Although __KidStats__ can run with __R__, we recommend using __RStudio__ (http:/
 1. On the left side of the __Input__ page, choose the type of __Transformation__ on age to be performed. A transformation isn't necessary but may provide a better fit, depending on the measurements available. It is acceptable to use all transformation options and choose the fit with the smallest prediction intervals. The results should be fairly similar, no matter what transformation is chosen.
 2. Push the __Evaluate__ button to perform the analysis.
 3. After analyzing the __Output__ page (see below), you may wish to exclude variables from the modelling process, these variables can be chosen in the __Exclude__ box. The __Exclude__ box is dynamic, so it will only provide measurements to remove from model creation that you have provided measurements for. If you click in the box, the list will appear. Only individuals from the reference sample with *all* non-excluded measurements entered on the __Input__ page will be used in model creation. 
-4. Once measurements have been chosen for exclusion, repeat Steps 2 and 3 as necessary.
+4. Once measurements have been chosen for exclusion from the model, repeat Steps 2 and 3 as necessary.
 
 <br>
 
@@ -28,7 +28,9 @@ Upon evaluation, some output is provided directly beneath the measurement input 
 ### Sex
 1. Push the __Evaluate__ button to perform the analysis.
 2. After analyzing the __Output__ page (see below), you may wish to exclude variables from the modelling process, these variables can be chosen in the __Exclude__ box. The __Exclude__ box is dynamic, so it will only provide measurements to remove from model creation that you have provided measurements for. If you click in the box, the list will appear. 
-3. Once the measurements have been chosen to exclude, repeat Steps 1 and 2 as necessary.
+3. If you wish to calculate the classification accuracy using the bootstrap method, check the __Bootstrap Classification Accuracy__ box. 
+  - *Note: This will slow down the sex estimation process.*
+4. Once measurements have been chosen for exclusion from the model, repeat Steps 2 and 3 as necessary.
 
 ### Sex: Output
 Some output (male and female posterior probabilities and sample size) is provided directly beneath the measurement input boxes and age estimation results. A more detailed output is available on the __Output__ page under the *Sex Estimation* tab and includes the posterior probabilities when the unknown is used in the created model, the FDA coefficients, variable importance, a confusion matrix that illustrates the trends in classification/misclassification for the created model, and the bootstrapped classification accuracy.
