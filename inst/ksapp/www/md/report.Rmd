@@ -81,6 +81,6 @@ pander(hinges)
 <br>
 
 ```{r echo=FALSE, message=FALSE}
-fda_coef <- data.frame(coef(fda_mod()[[1]], type = "discriminant"))
+fda_coef <- data.frame(coef(fda_mod()[[1]]))
 pander(fda_coef)
 ```

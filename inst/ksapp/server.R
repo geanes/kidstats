@@ -1,13 +1,10 @@
 shinyServer(function(input, output, session) {
   # get the reference data from the selectize input
   refdata <- reactive({
-    input$evaluate_age | input$evaluate_sex
-    isolate({
-    if (length(input$refsamp) == 0) return(NULL)
+    if (length(input$refsamp) == 0) return()
     switch(input$refsamp,
            "za" = salb_za,
            NULL)
-    })
   })
 
   # construct elements input table
@@ -66,9 +63,9 @@ shinyServer(function(input, output, session) {
     elements <- c(elements, "RDB" = input$rdb)
     elements <- c(elements, "UDL" = input$udl)
     elements <- c(elements, "UMSB" = input$umsb)
-    if (length(elements) == 0)  return(NULL)
     elements <- data.frame(as.list(elements))
     elements <- elements[, which(!is.na(elements[1,])), drop = FALSE]
+    if (length(elements) == 0) return()
     return(elements)
   })
 
@@ -83,30 +80,30 @@ shinyServer(function(input, output, session) {
 
   # create the reference data from the raw data
   refsamp <- reactive({
-    if (is.null(refdata()) | is.null(elements())) return(NULL)
+    if (is.null(refdata()) || is.null(elements())) return()
     ref <- dplyr::select_(refdata(), .dots = c("ID", "SEX", "AGE", names(elements())))
     return(ref)
   })
 
   age_samp <- reactive({
-    if (is.null(refsamp())) return(NULL)
+    if (is.null(refsamp())) return()
     samp <- dplyr::select_(refsamp(), .dots = c("-ID", "-SEX"))
     if (length(input$ex_age) != 0) {
       ex <- paste0("-", input$ex_age)
       samp <- na.omit(dplyr::select_(samp, .dots = ex))
     } else {samp <- na.omit(samp)}
-    if (length(samp) == 1) return(NULL)
+    if (length(samp) == 1) return()
     return(samp)
   })
 
   sex_samp <- reactive({
-    if (is.null(refsamp())) return(NULL)
+    if (is.null(refsamp())) return()
     samp <- dplyr::select_(refsamp(), .dots = c("-ID", "-AGE"))
     if (length(input$ex_sex) != 0) {
       ex <- paste0("-", input$ex_sex)
       samp <- na.omit(dplyr::select_(samp, .dots = ex))
     } else {samp <- na.omit(samp)}
-    if (length(samp) == 1) return(NULL)
+    if (length(samp) == 1) return()
     return(samp)
   })
 
@@ -123,53 +120,52 @@ shinyServer(function(input, output, session) {
 #################################### MODEL ####################################
 
   # create the models and predict age and sex using newdata
-  earth_mod <- reactive({
-    input$evaluate_age
-    isolate({
-      if (is.null(age_samp()) | is.null(elements())) return(NULL)
-      earth_data <- age_samp()
-      # transform age
-      earth_data$AGE <- switch(input$transform,
-        sqrt = sqrt(earth_data$AGE),
-        cbrt = (earth_data$AGE) ^ (1/3),
-        earth_data$AGE
-      )
-      # create formula
-      earth_formula <- as.formula('AGE ~ .')
-      # create age model and make predictions
-      model_age <- earth::earth(earth_formula, data = earth_data, varmod.method = "lm", ncross = 30, nfold = 10)
-      estage <- predict(model_age, newdata = elements(), interval = "pint")
-      # undo AGE transform
-      estage <- switch(input$transform,
-        sqrt = round(estage ^ 2, digits = 2),
-        cbrt = round(estage ^ 3, digits = 2),
-        round(estage, digits = 2)
-      )
-      return(list(model_age, estage))
-    })
+  earth_mod <- eventReactive(input$evaluate_age, {
+    if (is.null(age_samp())) return()
+    earth_data <- age_samp()
+    # transform age
+    earth_data$AGE <- switch(input$transform,
+      sqrt = sqrt(earth_data$AGE),
+      cbrt = (earth_data$AGE) ^ (1/3),
+      earth_data$AGE
+    )
+    # create formula
+    earth_formula <- as.formula('AGE ~ .')
+    # create age model and make predictions
+    model_age <- earth::earth(earth_formula, data = earth_data, varmod.method = "lm", ncross = 30, nfold = 10)
+    estage <- predict(model_age, newdata = elements(), interval = "pint")
+    # undo AGE transform
+    estage <- switch(input$transform,
+      sqrt = round(estage ^ 2, digits = 2),
+      cbrt = round(estage ^ 3, digits = 2),
+      round(estage, digits = 2)
+    )
+    return(list(model_age, estage))
   })
 
-  fda_mod <- reactive({
-    input$evaluate_sex
-    isolate({
-      if (is.null(sex_samp())) return(NULL)
-      fda_data <- sex_samp()
-      # create formula
-      fda_formula <- as.formula('SEX ~ .')
-      # create sex model
-      model_sex <- mda::fda(fda_formula, data = fda_data, method = earth, keep.fitted = TRUE, keepxy = TRUE)
-      # predict sex
-      estsex <- data.frame(predict(model_sex, newdata = elements(), type = "posterior"))
-      # classification accuracy
-      if (input$bstrap_ca) {
-        fda_ca <- boot::boot(data = fda_data, statistic = boot_accuracy_fda, formula = fda_formula, R = 1000)
-      } else {
-        ct.all <- mda::confusion(predict(model_sex, prior = c(1/2, 1/2)), fda_data$SEX)
-        fda_ca <- sum(diag(prop.table(ct.all)))
-      }
-      # return model and age estimation
-      return(list(model_sex, estsex, fda_ca))
-    })
+  fda_mod <- eventReactive(input$evaluate_sex, {
+    if (is.null(sex_samp())) return()
+    fda_data <- sex_samp()
+    # create formula
+    fda_formula <- as.formula('SEX ~ .')
+    # create sex model
+    model_sex <- mda::fda(fda_formula, data = fda_data, method = earth, keep.fitted = TRUE, keepxy = TRUE)
+    # predict sex
+    estsex <- data.frame(predict(model_sex, newdata = elements(), type = "posterior"))
+    # confusion matrix
+    cm <- mda::confusion(predict(model_sex, prior = c(1/2, 1/2)), fda_data$SEX)
+    # classification table
+    ct <- diag(prop.table(cm, 1))
+    # classification accuracy
+    if (input$bstrap_ca) {
+      fda_ca <- boot::boot(data = fda_data, statistic = boot_accuracy_fda, formula = fda_formula, R = 1000)
+      bs <- TRUE
+    } else {
+      fda_ca <- sum(diag(prop.table(cm)))
+      bs <- FALSE
+    }
+    # return model and age estimation
+    return(list(model_sex, estsex, fda_ca, bs, cm, ct))
   })
 
 
@@ -183,78 +179,91 @@ shinyServer(function(input, output, session) {
 
   # output earth model predictions
   output$earth_pred <- renderPrint({
-    if (is.null(earth_mod()) | is.null(elements())) return(NULL)
+    if (is.null(earth_mod())) return()
+    # if (is.null(earth_mod()) || is.null(elements())) return()
     pred <- earth_mod()[[2]]
     pred <- pred[, c(2, 1, 3)]
     return(pred)
   })
   # output sample size used in model
   output$earth_samp <- renderPrint({
+    if (is.null(earth_mod())) return()
     sampsize <- nrow(age_samp())
     message <- paste0("Sample size used in model: ", sampsize)
     return(message)
   })
   # output earth model summary
   output$earth_summary <- renderPrint({
-    if (input$evaluate_age == 0) return(NULL)
+    if (is.null(earth_mod())) return()
+    # if (input$evaluate_age == 0) return()
     summary(earth_mod()[[1]])
   })
   # output earth model variable importance
   output$earth_varimp <- renderPrint({
-    if (input$evaluate_age == 0) return(NULL)
+    if (is.null(earth_mod())) return()
+    # if (input$evaluate_age == 0) return()
     caret::varImp(earth_mod()[[1]])
   })
   # output earth model selection plot
   output$earth_modsel <- renderPlot({
+    if (is.null(earth_mod())) return()
     plot(earth_mod()[[1]], which = 1)
   })
   # output earth qq plot
   output$earth_qq <- renderPlot({
+    if (is.null(earth_mod())) return()
     plot(earth_mod()[[1]], which = 4)
   })
   # output earth rvf plot
   output$earth_rvf <- renderPlot({
+    if (is.null(earth_mod())) return()
     plot(earth_mod()[[1]], which = 3, level = .95, info = TRUE)
   })
 
   # output sex model predictions
   output$fda_pred <- renderPrint({
-    if (input$evaluate_sex == 0) return(NULL)
+    if (is.null(fda_mod())) return()
     fda_mod()[[2]]
   })
   # output sample size used in model
    output$fda_samp <- renderPrint({
+     if (is.null(fda_mod())) return()
      sampsize <- nrow(sex_samp())
      message <- paste0("Sample size used in model: ", sampsize)
      return(message)
    })
   # output fda coefficients
   output$fda_coef <- renderPrint({
-    if (input$evaluate_sex == 0) return(NULL)
-    coef(fda_mod()[[1]], type = "discriminant")
+    if (is.null(fda_mod())) return()
+    coef(fda_mod()[[1]])
   })
   # output fda model variable importance
   output$fda_varimp <- renderPrint({
-    if (input$evaluate_sex == 0) return(NULL)
+    if (is.null(fda_mod())) return()
     caret::varImp(fda_mod()[[1]])
   })
   # output fda confusion matrix
   output$fda_confusion <- renderPrint({
-    if (input$evaluate_sex == 0) return(NULL)
-    mda::confusion(predict(fda_mod()[[1]], prior = c(1/2, 1/2)), sex_samp()$SEX)
+    if (is.null(fda_mod())) return()
+    fda_mod()[[5]]
   })
   # output classification table
   output$fda_ct <- renderPrint({
-    if (input$evaluate_sex == 0) return(NULL)
-    ct <- mda::confusion(predict(fda_mod()[[1]], prior = c(1/2, 1/2)), sex_samp()$SEX)
-    diag(prop.table(ct, 1))
+    if (is.null(fda_mod())) return()
+    fda_mod()[[6]]
   })
   # output bootstraped classification accuracy
   output$fda_ca <- renderPrint({
-    if (input$evaluate_sex == 0) return(NULL)
+    if (is.null(fda_mod())) return()
     fda_mod()[[3]]
   })
+  output$fda_ca_title <- renderText({
+    if (is.null(fda_mod())) return()
+    if (fda_mod()[[4]] == TRUE) return(paste0(h4("Bootstrapped Classification Accuracy")))
+    return(paste0(h4("Classification Accuracy")))
+  })
   output$fda_bca_plot <- renderPlot({
+    if (fda_mod()[[4]] == FALSE || is.null(fda_mod())) return()
     plot(fda_mod()[[3]])
   })
 

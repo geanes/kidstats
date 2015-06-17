@@ -93,17 +93,9 @@ shinyUI(navbarPage(title = div(icon("child"), "KidStats"), windowTitle = "KidSta
                     verbatimTextOutput("fda_confusion"),
                     h4("Classification Table"),
                     verbatimTextOutput("fda_ct"),
-                    conditionalPanel(condition = "input.bstrap_ca == false",
-                      h4("Classification Accuracy")
-                    ),
-                    conditionalPanel(condition = "input.bstrap_ca == true",
-                      h4("Bootstrapped Classification Accuracy")
-                    ),
+                    htmlOutput("fda_ca_title"),
                     verbatimTextOutput("fda_ca"),
-                    conditionalPanel(condition = "input.bstrap_ca == true",
-                      plotOutput("fda_bca_plot")
-                    )
-
+                    plotOutput("fda_bca_plot")
                   )
               )
             )

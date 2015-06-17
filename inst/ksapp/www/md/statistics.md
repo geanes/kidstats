@@ -1,7 +1,7 @@
 # Statistics
 In the output for the age at death estimation, 95% prediction intervals (upper and lower) will be provided. Bootstrapped correct classification accuracies will be provided with the sex estimation. Details regarding each type of statistic used in the program are provided below. If you have additional questions regarding the statistics, please read the recommended texts/original publications.
 <br><br>
-Downloadable reports are available in PDF, Word, and HTML format. The pertinenet information, though not all of it, is provided in the reports. 
+Downloadable reports are available in Word and HTML format. The pertinenet information, though not all of it, is provided in the reports. 
 <br><br>
 
 __Please note:__ 
@@ -88,7 +88,8 @@ An important note is that the B bootstrapped datasets keep the same sample size 
 <br><br>
 - All parameters/results after the first two outputs are associated with the created FDA model that was based on the South African reference sample.
 <br><br>
-FDA model coefficients are the discriminant variables. *ARE THEY STANDARDIZED?*
+- FDA model coefficients are the canonical variable coefficients.
+<br><br>
 - Variable importance output is the same as described above in *Age Estimation*.
 <br><br>
 - The confusion matrix and classification table permits one to evaluate the misclassification trends and the fit with the original FDA model.
