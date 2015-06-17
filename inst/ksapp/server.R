@@ -361,5 +361,9 @@ shinyServer(function(input, output, session) {
    }
  )
 
+ observe({
+   if (input$exit_ks > 0) stopApp("Thank you for using KidStats.")
+ })
+
 
 })

@@ -24,7 +24,9 @@ shinyUI(navbarPage(title = div(icon("child"), "KidStats"), windowTitle = "KidSta
       h4("Sex"),
       checkboxInput("bstrap_ca", label = "Bootstrap Classification Accuracy", value = FALSE),
       selectInput("ex_sex", "Exclude from model:", multiple = TRUE, choices = c()),
-      actionButton("evaluate_sex", "Evaluate Sex", icon = icon("calculator"))
+      actionButton("evaluate_sex", "Evaluate Sex", icon = icon("calculator")),
+      hr(),
+      actionButton("exit_ks", label = "Exit KidStats", icon = icon("close"))
     ),
     # Main panel
     mainPanel(fluidRow(column(10, offset = 1, tableOutput("el_table"))),
