@@ -219,6 +219,10 @@ shinyServer(function(input, output, session) {
     if (is.null(earth_mod())) return()
     plot(earth_mod()[[1]], which = 3, level = .95, info = TRUE)
   })
+  output$hide_ageout <- reactive({
+    if (is.null(earth_mod())) TRUE else FALSE
+  })
+  outputOptions(output, 'hide_ageout', suspendWhenHidden = FALSE)
 
   # output sex model predictions
   output$fda_pred <- renderPrint({
@@ -266,6 +270,10 @@ shinyServer(function(input, output, session) {
     if (fda_mod()[[4]] == FALSE || is.null(fda_mod())) return()
     plot(fda_mod()[[3]])
   })
+  output$hide_sexout <- reactive({
+    if (is.null(fda_mod())) TRUE else FALSE
+  })
+  outputOptions(output, 'hide_sexout', suspendWhenHidden = FALSE)
 
 ################################ QUICK OUTPUT ############################
 
@@ -361,9 +369,6 @@ shinyServer(function(input, output, session) {
    }
  )
 
- observe({
-   if (input$exit_ks > 0) stopApp("Thank you for using KidStats.")
- })
-
+ session$onSessionEnded(function(){stopApp("Thank you for using KidStats.")})
 
 })

@@ -5,7 +5,6 @@ shinyUI(navbarPage(title = div(icon("child"), "KidStats"), windowTitle = "KidSta
                      <div class = 'navbar navbar-inverse navbar-fixed-bottom'>
                        <div class = 'navbar-inner'>
                          <div class = 'container footer-margin-top'>
-                           <span class = 'pull-left' style = 'padding-top: 5px;'><button id = 'exit_ks' type = 'button' class = 'btn btn-default action-button'><i class='fa fa-close'></i>Exit KidStats</button></span>
                            <span class = 'pull-right' style = 'color: white; padding-top: 10px;'><a target = '_blank' href ='http://www.isu.edu/anthro/stull.shtml'>&copy; Kyra Stull  2014</a></span>
                          </div>
                        </div>
@@ -62,7 +61,7 @@ shinyUI(navbarPage(title = div(icon("child"), "KidStats"), windowTitle = "KidSta
           mainPanel(
             tabsetPanel(
               tabPanel("Age Estimation",
-                  conditionalPanel(condition = "input.evaluate_age >= 1",
+                  conditionalPanel(condition = "output.hide_ageout == false",
                     h2("Age Estimation"),
                     hr(),
                     verbatimTextOutput("earth_pred"),
@@ -80,7 +79,7 @@ shinyUI(navbarPage(title = div(icon("child"), "KidStats"), windowTitle = "KidSta
                   )
               ),
               tabPanel("Sex Estimation",
-                  conditionalPanel(condition = "input.evaluate_sex >= 1",
+                  conditionalPanel(condition = "output.hide_sexout == false",
                     h2("Sex Estimation"),
                     hr(),
                     verbatimTextOutput("fda_pred"),
