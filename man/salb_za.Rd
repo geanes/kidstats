@@ -16,28 +16,28 @@ children aged birth through twelve.
 \section{Variables}{
 
 \itemize{
-  \item \code{id}: Unique case ID
-  \item \code{sex}: M or F
-  \item \code{ancestry}: Ancestry
-  \item \code{age_y}: Age at scan date (years)
-  \item \code{h_mxl}: Humerus maximum length (mm)
-  \item \code{h_pb}: Humerus proximal breadth (mm)
-  \item \code{h_db}: Humerus distal breadth (mm)
-  \item \code{h_msb}: Humerus mid-shaft breadth (mm)
-  \item \code{u_mxl}: Ulna maximum length (mm)
-  \item \code{u_msb}: Ulna mid-shaft breadth (mm)
-  \item \code{r_mxl}: Radius maximum length (mm)
-  \item \code{r_pb}: Radius proximal breadth (mm)
-  \item \code{r_db}: Radius distal breadth (mm)
-  \item \code{r_msb}: Radius mid-shaft breadth (mm)
-  \item \code{f_mxl}: Femur maximum length (mm)
-  \item \code{f_db}: Femur distal breadth (mm)
-  \item \code{f_msb}: Femur mid-shaft breadth (mm)
-  \item \code{t_mxl}: Tibia maximum length (mm)
-  \item \code{t_pb}: Tibia proximal breadth (mm)
-  \item \code{t_db}: Tibia distal breadth (mm)
-  \item \code{t_msb}: Tibia mid-shaft breadth (mm)
-  \item \code{fb_mxl}: Fibula maximum length (mm)
+  \item \code{ID}: Unique case ID
+  \item \code{SEX}: M or F
+  \item \code{ANCESTRY}: Ancestry
+  \item \code{AGE}: Age at scan date (years)
+  \item \code{HDL}: Humerus diaphyseal length (mm)
+  \item \code{HPB}: Humerus proximal breadth (mm)
+  \item \code{HDB}: Humerus distal breadth (mm)
+  \item \code{HMSB}: Humerus mid-shaft breadth (mm)
+  \item \code{UDL}: Ulna diaphyseal length (mm)
+  \item \code{UMSB}: Ulna mid-shaft breadth (mm)
+  \item \code{RDL}: Radius diaphyseal length (mm)
+  \item \code{RPB}: Radius proximal breadth (mm)
+  \item \code{RDB}: Radius distal breadth (mm)
+  \item \code{RMSB}: Radius mid-shaft breadth (mm)
+  \item \code{FDL}: Femur maximum length (mm)
+  \item \code{FDB}: Femur distal breadth (mm)
+  \item \code{FMSB}: Femur mid-shaft breadth (mm)
+  \item \code{TDL}: Tibia diaphyseal length (mm)
+  \item \code{TPB}: Tibia proximal breadth (mm)
+  \item \code{TDB}: Tibia distal breadth (mm)
+  \item \code{TMSB}: Tibia mid-shaft breadth (mm)
+  \item \code{FBDL}: Fibula diaphyseal length (mm)
 }
 }
 \keyword{datasets}
