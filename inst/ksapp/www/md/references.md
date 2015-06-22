@@ -23,15 +23,15 @@ This would not have been possible without the assistance of Glenn Eanes, Stephen
 <br><br>
 - Hastie T, Tibshirani R, J Friedman. 2009. The Elements of Statistical Learning: Data Mining, Inference, and Prediction. 2nd ed. New York: Springer-Verlag.
 <br><br>
-- Kohavi R. 1995. A study of cross-validation and bootstrap for accuracy estimation and model selection. In: Proceedings of the 14th international joint conference on Artificial intelligence - Volume 2. IJCAI’95. San Francisco, CA, USA: Morgan Kaufmann Publishers Inc. p 1137–1143. Available from: http://dl.acm.org/citation.cfm?id=1643031.1643047
+- Kohavi R. 1995. A study of cross-validation and bootstrap for accuracy estimation and model selection. In: Proceedings of the 14th international joint conference on Artificial intelligence - Volume 2. IJCAI’95. San Francisco, CA, USA: Morgan Kaufmann Publishers Inc. p 1137–1143. Available from: <a target = "_blank" href = "http://dl.acm.org/citation.cfm?id=1643031.1643047">here.</a>
 <br><br>
-- Kuhn M. 2015. caret: Classification and Regression Training. Available from: http://CRAN.R-project.org/package=caret
+- Kuhn M. 2015. caret: Classification and Regression Training. Available from: <a target = "_blank" href = "http://CRAN.R-project.org/package=caret">here</a>
 <br><br>
 - Leisch F, Hornik K, Ripley BD. 2011. mda: Mixture and flexible discriminant analysis.
 <br><br>
 - Michie D, Spiegelhalter DJ, Taylor CC, Campbell J eds. 1994. Machine learning, neural and statistical classification. Upper Saddle River, NJ, USA: Ellis Horwood.
 <br><br>
-- Milborrow S. 2013. earth: Multivariate Adaptive Regression Spline Models. Available from: http://CRAN.R-project.org/package=earth
+- Milborrow S. 2013. earth: Multivariate Adaptive Regression Spline Models. Available from: <a target = "_blank" href = "http://CRAN.R-project.org/package=earth">here</a>
 <br><br>
 - Milborrow S. 2015. Variance models in earth.
 <br><br>
@@ -39,7 +39,7 @@ This would not have been possible without the assistance of Glenn Eanes, Stephen
 <br><br>
 - Muñoz J, Felicísimo ÁM. 2004. Comparison of statistical methods commonly used in predictive modelling. J Veg Sci 15:285–292.
 <br><br>
-- R Core Team. 2013. R: A Language and Environment for Statistical Computing. Vienna, Austria: R Foundation for Statistical Computing. Available from: http://www.R-project.org/
+- R Core Team. 2013. R: A Language and Environment for Statistical Computing. Vienna, Austria: R Foundation for Statistical Computing. Available from: <a target = "_blank" href = "http://www.R-project.org/">here</a>
 <br><br>
 - Reynes C, Sabatier R, Molinari N. 2006. Choice of B-splines with free parameters in the flexible discriminant analysis context. Computational Statistics & Data Analysis 51:1765–1778.
 <br><br>
@@ -51,5 +51,5 @@ This would not have been possible without the assistance of Glenn Eanes, Stephen
 <br><br>
 - Stull KE, L’Abbé EN, Ousley SD. 2014. Using multivariate adaptive regression splines to estimate subadult age from diaphyseal dimensions. Am J Phys Anthropol 154:376–386.
 <br><br>
-- De Veaux RD, Ungar LH. Multicollinearity: A tale of two nonparametric regressions. In: Oldford RW, editor. Selecting Models from Data. Lecture Notes in Statistics. Springer New York. p 393–402. Available from: http://link.springer.com/chapter/10.1007/978-1-4612-2660-4_40
+- De Veaux RD, Ungar LH. Multicollinearity: A tale of two nonparametric regressions. In: Oldford RW, editor. Selecting Models from Data. Lecture Notes in Statistics. Springer New York. p 393–402. Available from: <a target = "_blank" href = "http://link.springer.com/chapter/10.1007/978-1-4612-2660-4_40">here</a>
 <br><br>

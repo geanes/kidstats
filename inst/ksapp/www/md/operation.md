@@ -1,6 +1,6 @@
 # Operation
 <br><br>
-Although __KidStats__ can run with __R__, we recommend using __RStudio__ (http://www.rstudio.com). __RStudio__ is an integrated development environment for __R__ that works with Shiny, includes __Pandoc__ (a program used to generate reports), and features used to develop the software. __RStudio__ or __R__ needs to be open for __KidStats__ to operate. Thus, if you close __R__ or __RStudio__ the web interface for __KidStats__ will be disabled. 
+Although __KidStats__ can run with __R__, we recommend using <a target = "_blank" href = "http://www.rstudio.com/products/RStudio">RStudio</a>. __RStudio__ is an integrated development environment for __R__ that works with Shiny, includes __Pandoc__ (a program used to generate reports), and features used to develop the software. __RStudio__ or __R__ needs to be open for __KidStats__ to operate. Thus, if you close __R__ or __RStudio__ the web interface for __KidStats__ will be disabled. 
 
 ### Input
 1. Collect the proper measurements *(see __Measurements__ section above)*. 
