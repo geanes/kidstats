@@ -44,8 +44,7 @@ shinyUI(navbarPage(title = div(icon("child"), "KidStats"), windowTitle = "KidSta
         column(1),
         column(3, htmlOutput("pred_f")),
         column(3, htmlOutput("pred_m")),
-        column(1),
-        column(2),
+        column(3, htmlOutput("qca")),
         column(2, htmlOutput("sampsize_sex"))
       )
     )
@@ -56,7 +55,9 @@ shinyUI(navbarPage(title = div(icon("child"), "KidStats"), windowTitle = "KidSta
           sidebarPanel(
             # radioButtons('format', 'Report Format', c('PDF', 'HTML', 'Word'), inline = TRUE),
             radioButtons('format', 'Report Format', c('HTML', 'Word'), inline = TRUE),
-            downloadButton('downloadReport')
+            downloadButton('downloadReport_age', label = 'Download Age Report'),
+            br(), br(),
+            downloadButton('downloadReport_sex', label = 'Download Sex Report')
           ),
           mainPanel(
             tabsetPanel(

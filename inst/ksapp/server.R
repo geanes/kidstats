@@ -111,11 +111,11 @@ shinyServer(function(input, output, session) {
 
   boot_accuracy_fda <- function(data, indices, formula){
     withProgress(message = "Bootstrapping", value = 0, {
-    d <- data[indices,]
-    fit <- mda::fda(formula, keep.fitted = TRUE, method = earth, keepxy = TRUE, data = d)
-    ct.all <- mda::confusion(predict(fit, prior = c(1/2, 1/2)), d$SEX)
-    s <- sum(diag(prop.table(ct.all)))
-    incProgress(1/1000)
+      d <- data[indices,]
+      fit <- mda::fda(formula, keep.fitted = TRUE, method = earth, keepxy = TRUE, data = d)
+      ct.all <- mda::confusion(predict(fit, prior = c(1/2, 1/2)), d$SEX)
+      s <- sum(diag(prop.table(ct.all)))
+      incProgress(1/1000)
     })
     return(s)
   }
@@ -186,7 +186,7 @@ shinyServer(function(input, output, session) {
       }
       setProgress(1)
     })
-    # return model and age estimation
+    # return model and sex estimation
     return(list(model_sex, estsex, fda_ca, bs, cm, ct))
   })
 
@@ -364,26 +364,62 @@ shinyServer(function(input, output, session) {
    message <- paste(h5("Posterior Male:"), h3(sprintf("%.4f", post_m)), sep = " ")
    return(message)
  })
+ output$qca <- renderText({
+   if (input$evaluate_sex == 0) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
+   if (is.null(fda_mod())) return(paste0("<i class = 'fa fa-circle-thin fa-2x' style = 'padding-top: 25px; color: #DDD;'></i>"))
+   input$evaluate_sex
+   isolate({
+     qca <- if (input$bstrap_ca) round(fda_mod()[[3]]$t0, digits = 4) else round(fda_mod()[[3]], digits = 4)
+     message <- paste(h5("Classification Accuracy:"), h3(sprintf("%.4f", qca)), sep = " ")
+     return(message)
+   })
+ })
 
- # output report download handler
- output$downloadReport <- downloadHandler(
+ # age report download handler
+ output$downloadReport_age <- downloadHandler(
    filename = function() {
-     paste('kidstats-report', sep = '.', switch(
+     paste('KS_age_report', sep = '.', switch(
        # input$format, PDF = 'pdf', HTML = 'html', Word = 'docx'
        input$format, HTML = 'html', Word = 'docx'
      ))
    },
 
    content = function(file) {
-     src <- system.file('ksapp/www/md/report.Rmd', package = 'kidstats')
+     src <- system.file('ksapp/www/md/report_age.Rmd', package = 'kidstats')
 
      # temporarily switch to the temp dir, in case you do not have write
      # permission to the current working directory
      owd <- setwd(tempdir())
      on.exit(setwd(owd))
-     file.copy(src, 'report.Rmd')
+     file.copy(src, 'report_age.Rmd')
 
-     out <- rmarkdown::render('report.Rmd', switch(
+     out <- rmarkdown::render('report_age.Rmd', switch(
+       input$format,
+       PDF = rmarkdown::pdf_document(), HTML = rmarkdown::html_document(css = system.file('ksapp/www/css/report.css', package = 'kidstats')), Word = rmarkdown::word_document()
+     ))
+     file.rename(out, file)
+   }
+ )
+
+ # sex report download handler
+ output$downloadReport_sex <- downloadHandler(
+   filename = function() {
+     paste('KS_sex_report', sep = '.', switch(
+       # input$format, PDF = 'pdf', HTML = 'html', Word = 'docx'
+       input$format, HTML = 'html', Word = 'docx'
+     ))
+   },
+
+   content = function(file) {
+     src <- system.file('ksapp/www/md/report_sex.Rmd', package = 'kidstats')
+
+     # temporarily switch to the temp dir, in case you do not have write
+     # permission to the current working directory
+     owd <- setwd(tempdir())
+     on.exit(setwd(owd))
+     file.copy(src, 'report_sex.Rmd')
+
+     out <- rmarkdown::render('report_sex.Rmd', switch(
        input$format,
        PDF = rmarkdown::pdf_document(), HTML = rmarkdown::html_document(css = system.file('ksapp/www/css/report.css', package = 'kidstats')), Word = rmarkdown::word_document()
      ))

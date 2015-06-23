@@ -1,6 +1,6 @@
 Package: kidstats
 Type: Package
-Title: Age and sex estimation for subadults based on long bone measurements
+Title: Subadult age and sex estimations based on long bone measurements
 Version: 0.0.1.9003
 Date: 2015-03-08
 Authors@R: c(

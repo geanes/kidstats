@@ -4,14 +4,6 @@ In the output for the age at death estimation, 95% prediction intervals (upper a
 Downloadable reports are available in Word and HTML format. The pertinenet information, though not all of it, is provided in the reports. 
 <br><br>
 
-__Please note:__ 
-<br><br>
-1. When the subadults are younger, univariate models using diaphyseal lengths produce the narrowest prediction intervals. In contrast, when the subadults are older, multivariate models using numerous (or all available) measurements produce the narrowest prediction intervals. MARS will choose the best fit model (whether it is univariate or multivariate) based on least squares. 
-<br><br> 
-2. Incorporating as many measurements as possible for the sex estimation portion will yield the highest correct classification accuracies in sex estimation. Univariate models, and even single element bone models, yield fairly impractical results (Stull, 2013).
-
-<br><br>
-
 ---
 
 ### Multivariate Adaptive Regression Splines (MARS)
@@ -45,7 +37,7 @@ The variance of the predicted values is used to estimate PIs (Stull and Milborro
 - The out-of-fold R-squared (CVRSq) is averaged from the left-out subset, which is an estimate of the model performance on independent data (Efron and Tibshirani, 1993; Hastie et al., 2009; Milborrow, 2013). 
 <br><br>
 
-- The generalized R-squared (GRSq) is based on the raw GCV and is a generalization of model performance. Adding terms (or hinge functions) generally always increases the R2 statistic, but the GRSq may actually decrease because of the reduction of predictive powers (Milborrow, 2013).
+- The generalized R-squared (GRSq) is based on the raw GCV and is a generalization of model performance. Adding terms (or hinge functions) generally always increases the R^2 statistic, but the GRSq may actually decrease because of the reduction of predictive powers (Milborrow, 2013).
 <br><br>
 
 - *MARS* conducts automatic variable selection based on the effect of the variable on the response variable. The varImp function (from the `caret` package [Kuhn, 2015]) tracks the changes in model statistics (i.e., GCV) for each predictor variable and accumulates the reduction in the statistic when each predictor’s feature is added to the model (Kuhn, 2015). The reduction is then used as the variable importance measure. The predictor variable has an importance value of zero if it was never used in any of the *MARS* basis functions after pruning. One hundred is the largest importance value that a predictor variable can have. Within the earth function, the varImp is a wrapper to the evimp function in the earth package. There are three statistics that can be used to estimate variable importance in MARS models: 1) the number of model subsets that include the variable, 2) variables that cause for a decreased residual sum of squares, and 3) the GCV criterion, if the GCV increases, the variable has less importance (Milborrow, 2013). 
@@ -57,7 +49,10 @@ The top two plots are associated with the final fit whereas the third plot is as
 
 <br><br>
 
-
+__Please note:__ 
+<br><br>
+When the subadults are younger, univariate models using diaphyseal lengths produce the narrowest prediction intervals. In contrast, when the subadults are older, multivariate models using numerous (or all available) measurements produce the narrowest prediction intervals. MARS will choose the best fit model (whether it is univariate or multivariate) based on least squares. 
+<br><br>
 
 ---
 
@@ -95,3 +90,8 @@ An important note is that the B bootstrapped datasets keep the same sample size 
 - The confusion matrix and classification table permits one to evaluate the misclassification trends and the fit with the original FDA model.
 <br><br>
 - The final output is dedicated to the bootstrapped classification accuracy and the associated diagnostic plots. Under "Bootstrap Statistics" and in line with t1 is the bootstrapped classification accuracy with the standard error. The final classification is given in the downloadable reports. 
+
+<br><br>
+__Please note:__ 
+<br><br>
+Incorporating as many measurements as possible for the sex estimation portion will yield the highest correct classification accuracies in sex estimation. Univariate models, and even single element bone models, yield fairly impractical results (Stull, 2013).

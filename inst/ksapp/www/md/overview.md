@@ -19,3 +19,7 @@ stulkyra@isu.edu <br>
 The latest version of KidStats can be found on <a target = "_blank" href = "https://github.com/geanes/kidstats">GitHub</a>.
 <br>
 Bug reports can be submitted <a target = "_blank" href = "https://github.com/geanes/kidstats/issues">here</a>.
+<br><br>
+Citing KidStats:
+
+- Kyra Stull (2015). kidstats: Subadult age and sex estimations based on long bone measurements. R package version 0.0.1.9003. https://github.com/geanes/kidstats

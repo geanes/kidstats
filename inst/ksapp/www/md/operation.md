@@ -13,7 +13,7 @@ Although __KidStats__ can run with __R__, we recommend using <a target = "_blank
 ### Age
 1. On the left side of the __Input__ page, choose the type of __Transformation__ on age to be performed. A transformation isn't necessary but may provide a better fit, depending on the measurements available. It is acceptable to use all transformation options and choose the fit with the smallest prediction intervals. The results should be fairly similar, no matter what transformation is chosen.
 2. Push the __Evaluate__ button to perform the analysis.
-3. After analyzing the __Output__ page (see below), you may wish to exclude variables from the modelling process, these variables can be chosen in the __Exclude__ box. The __Exclude__ box is dynamic, so it will only provide measurements to remove from model creation that you have provided measurements for. If you click in the box, the list will appear. Only individuals from the reference sample with *all* non-excluded measurements entered on the __Input__ page will be used in model creation. 
+3. After analyzing the __Output__ page, you may wish to exclude variables from the modelling process, these variables can be chosen in the __Exclude__ box. The __Exclude__ box is dynamic, so it will only provide measurements to remove from model creation that you have provided measurements for. If you click in the box, the list will appear. Only individuals from the reference sample with *all* non-excluded measurements entered on the __Input__ page will be used in model creation. 
 4. Once measurements have been chosen for exclusion from the model, repeat Steps 2 and 3 as necessary.
 
 <br>
