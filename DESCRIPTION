@@ -1,7 +1,7 @@
 Package: kidstats
 Type: Package
 Title: Age and sex estimation for subadults based on long bone measurements
-Version: 0.0.1.9002
+Version: 0.0.1.9003
 Date: 2015-03-08
 Authors@R: c(
     person("Glenn", "Eanes", email = "glenn.eanes@gmail.com", role = "cre"),

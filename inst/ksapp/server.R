@@ -110,10 +110,13 @@ shinyServer(function(input, output, session) {
 ############################## UTILITY FUNCTIONS ##############################
 
   boot_accuracy_fda <- function(data, indices, formula){
+    withProgress(message = "Bootstrapping", value = 0, {
     d <- data[indices,]
     fit <- mda::fda(formula, keep.fitted = TRUE, method = earth, keepxy = TRUE, data = d)
     ct.all <- mda::confusion(predict(fit, prior = c(1/2, 1/2)), d$SEX)
     s <- sum(diag(prop.table(ct.all)))
+    incProgress(1/1000)
+    })
     return(s)
   }
 
@@ -122,48 +125,67 @@ shinyServer(function(input, output, session) {
   # create the models and predict age and sex using newdata
   earth_mod <- eventReactive(input$evaluate_age, {
     if (is.null(age_samp())) return()
-    earth_data <- age_samp()
-    # transform age
-    earth_data$AGE <- switch(input$transform,
-      sqrt = sqrt(earth_data$AGE),
-      cbrt = (earth_data$AGE) ^ (1/3),
-      earth_data$AGE
-    )
-    # create formula
-    earth_formula <- as.formula('AGE ~ .')
-    # create age model and make predictions
-    model_age <- earth::earth(earth_formula, data = earth_data, varmod.method = "lm", ncross = 30, nfold = 10)
-    estage <- predict(model_age, newdata = elements(), interval = "pint")
-    # undo AGE transform
-    estage <- switch(input$transform,
-      sqrt = round(estage ^ 2, digits = 2),
-      cbrt = round(estage ^ 3, digits = 2),
-      round(estage, digits = 2)
-    )
+    withProgress(message = "Estimating age", value = 0, {
+      incProgress(0.1, detail = "Retrieving reference data")
+      earth_data <- age_samp()
+      # transform age
+      incProgress(0.1, detail = "Transforming AGE")
+      earth_data$AGE <- switch(input$transform,
+        sqrt = sqrt(earth_data$AGE),
+        cbrt = (earth_data$AGE) ^ (1/3),
+        earth_data$AGE
+      )
+      # create formula
+      incProgress(0.1, detail = "Creating formula")
+      earth_formula <- as.formula('AGE ~ .')
+      # create age model and make predictions
+      incProgress(0.3, detail = "Creating Earth model")
+      model_age <- earth::earth(earth_formula, data = earth_data, varmod.method = "lm", ncross = 30, nfold = 10)
+      incProgress(0.3, detail = "Predicting age")
+      estage <- predict(model_age, newdata = elements(), interval = "pint")
+      # undo AGE transform
+      incProgress(0.1, detail = "Undoing Age transformation")
+      estage <- switch(input$transform,
+        sqrt = round(estage ^ 2, digits = 2),
+        cbrt = round(estage ^ 3, digits = 2),
+        round(estage, digits = 2)
+      )
+      setProgress(1)
+    })
     return(list(model_age, estage))
   })
 
   fda_mod <- eventReactive(input$evaluate_sex, {
     if (is.null(sex_samp())) return()
-    fda_data <- sex_samp()
-    # create formula
-    fda_formula <- as.formula('SEX ~ .')
-    # create sex model
-    model_sex <- mda::fda(fda_formula, data = fda_data, method = earth, keep.fitted = TRUE, keepxy = TRUE)
-    # predict sex
-    estsex <- data.frame(predict(model_sex, newdata = elements(), type = "posterior"))
-    # confusion matrix
-    cm <- mda::confusion(predict(model_sex, prior = c(1/2, 1/2)), fda_data$SEX)
-    # classification table
-    ct <- diag(prop.table(cm, 1))
-    # classification accuracy
-    if (input$bstrap_ca) {
-      fda_ca <- boot::boot(data = fda_data, statistic = boot_accuracy_fda, formula = fda_formula, R = 1000)
-      bs <- TRUE
-    } else {
-      fda_ca <- sum(diag(prop.table(cm)))
-      bs <- FALSE
-    }
+    withProgress(message = "Estimating sex", value = 0, {
+      incProgress(0.1, detail = "Retrieving reference data")
+      fda_data <- sex_samp()
+      # create formula
+      incProgress(0.1, detail = "Creating formula")
+      fda_formula <- as.formula('SEX ~ .')
+      # create sex model
+      incProgress(0.2, detail = "Creating FDA model")
+      model_sex <- mda::fda(fda_formula, data = fda_data, method = earth, keep.fitted = TRUE, keepxy = TRUE)
+      # predict sex
+      incProgress(0.3, detail = "Predicting sex")
+      estsex <- data.frame(predict(model_sex, newdata = elements(), type = "posterior"))
+      # confusion matrix
+      incProgress(0.1, detail = "Calculating confusion matrix")
+      cm <- mda::confusion(predict(model_sex, prior = c(1/2, 1/2)), fda_data$SEX)
+      # classification table
+      incProgress(0.1, detail = "Calculating classification table")
+      ct <- diag(prop.table(cm, 1))
+      # classification accuracy
+      incProgress(0.1, detail = "Calculating classification accuracy")
+      if (input$bstrap_ca) {
+        fda_ca <- boot::boot(data = fda_data, statistic = boot_accuracy_fda, formula = fda_formula, R = 1000)
+        bs <- TRUE
+      } else {
+        fda_ca <- sum(diag(prop.table(cm)))
+        bs <- FALSE
+      }
+      setProgress(1)
+    })
     # return model and age estimation
     return(list(model_sex, estsex, fda_ca, bs, cm, ct))
   })
