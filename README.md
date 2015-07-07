@@ -10,6 +10,8 @@ KidStats is based on the research of Kyra Stull PhD (http://kyrastull.weebly.com
 Installation:
 -------------
 
+KidStats requires **R** version 3.1.2 or higher.
+
 ```r
 install.packages("devtools")
 devtools::install_github("geanes/kidstats")
