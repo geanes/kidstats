@@ -178,7 +178,7 @@ shinyServer(function(input, output, session) {
       # classification accuracy
       incProgress(0.1, detail = "Calculating classification accuracy")
       if (input$bstrap_ca) {
-        fda_ca <- boot::boot(data = fda_data, statistic = boot_accuracy_fda, formula = fda_formula, R = 1000)
+        fda_ca <- boot::boot(data = fda_data, statistic = boot_accuracy_fda, formula = fda_formula, strata = fda_data$SEX, R = 1000)
         bs <- TRUE
       } else {
         fda_ca <- sum(diag(prop.table(cm)))
