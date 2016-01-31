@@ -109,15 +109,16 @@ shinyServer(function(input, output, session) {
 
 ############################## UTILITY FUNCTIONS ##############################
 
-  boot_accuracy_fda <- function(data, indices, formula){
-    withProgress(message = "Bootstrapping", value = 0, {
-      d <- data[indices,]
-      fit <- mda::fda(formula, keep.fitted = TRUE, method = earth, keepxy = TRUE, data = d)
-      ct.all <- mda::confusion(predict(fit, prior = c(1/2, 1/2)), d$SEX)
-      s <- sum(diag(prop.table(ct.all)))
-      incProgress(1/1000)
-    })
-    return(s)
+  boot_accuracy_fda <- function(data, indices, formula, priors = c(.5, .5)){
+    d <- data[indices,]
+    leftout <- setdiff(seq(along = indices), indices)
+    if (length(leftout) > 0) dtest <- data[leftout,] else dtest <- d
+    fit <- mda::fda(formula, keep.fitted = TRUE, method = earth, keepxy = TRUE, data = d)
+    ct.all <- mda::confusion(predict(fit, newdata = dtest, prior = priors), dtest$SEX)
+    diagonal <- diag(prop.table(ct.all, 1))
+    s <- sum(diag(prop.table(ct.all)))
+    result <- c(diagonal, s)
+    return(result)
   }
 
 #################################### MODEL ####################################
