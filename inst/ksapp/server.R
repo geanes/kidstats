@@ -109,7 +109,7 @@ shinyServer(function(input, output, session) {
 
 ############################## UTILITY FUNCTIONS ##############################
 
-  boot_accuracy_fda <- function(data, indices, formula, priors = c(.5, .5)){
+  boot_accuracy_fda <- function(data, indices, formula, priors = c(.4, .6)){
     d <- data[indices,]
     leftout <- setdiff(seq(along = indices), indices)
     if (length(leftout) > 0) dtest <- data[leftout,] else dtest <- d
