@@ -7,12 +7,12 @@ Future intentions include the incorporation of additional populations so there a
 
 ----
 
-Kyra Stull, PhD <br>
+Kyra E. Stull, PhD <br>
 Assistant Professor <br>
 Department of Anthropology <br>
-Idaho State University <br>
-stulkyra@isu.edu <br>
-<a target = "_blank" href = "http://www.isu.edu/anthro/stull.shtml">homepage</a>
+University of Nevada, Reno <br>
+kstull@unr.edu <br>
+<a target = "_blank" href = "http://kyrastull.weebly.com">homepage</a>
 
 ----
 
