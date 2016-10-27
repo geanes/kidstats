@@ -5,7 +5,7 @@ shinyUI(navbarPage(title = div(icon("child"), "KidStats"), windowTitle = "KidSta
                      <div class = 'navbar navbar-inverse navbar-fixed-bottom'>
                        <div class = 'navbar-inner'>
                          <div class = 'container footer-margin-top'>
-                           <span class = 'pull-right' style = 'padding-top: 10px;'><a style = 'color: white;' target = '_blank' href ='http://www.isu.edu/anthro/stull.shtml'>&copy; Kyra Stull  2014</a></span>
+                           <span class = 'pull-right' style = 'padding-top: 10px;'><a style = 'color: white;' target = '_blank' href ='http://kyrastull.weebly.com'>&copy; Kyra Stull  2016</a></span>
                          </div>
                        </div>
                      </div>"),

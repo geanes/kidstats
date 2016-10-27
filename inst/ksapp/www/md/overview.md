@@ -7,12 +7,12 @@ Future intentions include the incorporation of additional populations so there a
 
 ----
 
-Kyra Stull, PhD <br>
+Kyra E. Stull, PhD <br>
 Assistant Professor <br>
 Department of Anthropology <br>
-Idaho State University <br>
-stulkyra@isu.edu <br>
-<a target = "_blank" href = "http://www.isu.edu/anthro/stull.shtml">homepage</a>
+University of Nevada, Reno <br>
+kstull@unr.edu <br>
+<a target = "_blank" href = "http://kyrastull.weebly.com">homepage</a>
 
 ----
 
@@ -22,4 +22,4 @@ Bug reports can be submitted <a target = "_blank" href = "https://github.com/gea
 <br><br>
 Citing KidStats:
 
-- Kyra Stull (2015). kidstats: Subadult age and sex estimations based on long bone measurements. R package version 0.0.1.9003. https://github.com/geanes/kidstats
+- Kyra Stull (2015). kidstats: Subadult age and sex estimations based on long bone measurements. R package version 0.1.1.9002. https://github.com/geanes/kidstats
